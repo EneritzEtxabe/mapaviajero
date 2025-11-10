@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+html, body {
+  @apply font-sans text-gray-800;
+}
+
+.max-content{
+    max-width: 75rem;
+    margin: 0 auto;
+}
+
+/*TEXT COLOR*/
+.f-color--dark{
+    @apply text-[#585858];
+}
+.f-color--light{
+     @apply text-[aliceblue];
+}
+
+/*COLORS*/
+.bg--beige{
+    @apply bg-[#d5d0cd8e];
+}
+.bg--dark{
+    @apply bg-[#868381];
+}
+.bg--white{
+    @apply bg-[white];
+}
+/*BOTONS*/
+.btn--dark{
+    @apply bg-[#868381] text-[aliceblue] border border-transparent;
+}
+    .hover\:btn--dark:hover {
+        @apply  bg-[#d5d0cd8e] border border-solid border-[#585858] text-[#585858];
+    }
+.btn--light{
+    @apply text-[#585858] border border-transparent;
+}
+    .hover\:btn--light:hover {
+        @apply  bg-[#868381] border border-solid text-[aliceblue];
+    }

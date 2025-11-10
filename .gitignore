@@ -1,0 +1,63 @@
+# === FRONTEND: mapaviajero-web (Vue + Vite + Cypress + Playwright) ===
+mapaviajero-web/node_modules
+mapaviajero-web/dist
+mapaviajero-web/dist-ssr
+mapaviajero-web/coverage
+mapaviajero-web/*.local
+mapaviajero-web/*.tsbuildinfo
+
+# Logs del frontend
+mapaviajero-web/logs
+mapaviajero-web/*.log
+mapaviajero-web/npm-debug.log*
+mapaviajero-web/yarn-debug.log*
+mapaviajero-web/yarn-error.log*
+mapaviajero-web/pnpm-debug.log*
+mapaviajero-web/lerna-debug.log*
+
+# Cypress
+mapaviajero-web/cypress/videos/
+mapaviajero-web/cypress/screenshots/
+
+# Playwright
+mapaviajero-web/test-results/
+mapaviajero-web/playwright-report/
+
+# Editores (frontend)
+mapaviajero-web/.vscode/*
+!mapaviajero-web/.vscode/extensions.json
+mapaviajero-web/.idea
+mapaviajero-web/*.suo
+mapaviajero-web/*.ntvs*
+mapaviajero-web/*.njsproj
+mapaviajero-web/*.sln
+mapaviajero-web/*.sw?
+
+# Archivos del sistema
+mapaviajero-web/.DS_Store
+mapaviajero-web/Thumbs.db
+
+# === BACKEND: mapaviajero-api (Laravel) ===
+mapaviajero-api/.phpunit.cache
+mapaviajero-api/node_modules
+mapaviajero-api/public/build
+mapaviajero-api/public/hot
+mapaviajero-api/public/storage
+mapaviajero-api/storage/*.key
+mapaviajero-api/storage/pail
+mapaviajero-api/vendor
+mapaviajero-api/.env
+mapaviajero-api/.env.backup
+mapaviajero-api/.env.production
+mapaviajero-api/.phpactor.json
+mapaviajero-api/.phpunit.result.cache
+mapaviajero-api/Homestead.json
+mapaviajero-api/Homestead.yaml
+mapaviajero-api/npm-debug.log
+mapaviajero-api/yarn-error.log
+mapaviajero-api/auth.json
+mapaviajero-api/.fleet
+mapaviajero-api/.idea
+mapaviajero-api/.nova
+mapaviajero-api/.vscode
+mapaviajero-api/.zed
