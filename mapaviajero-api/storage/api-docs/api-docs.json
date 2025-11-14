@@ -3388,7 +3388,7 @@
                                 "example": "josé@gmail.com"
                             }
                         },
-                        "type": "string"
+                        "type": "object"
                     },
                     "fecha_inicio": {
                         "type": "string",

@@ -15,7 +15,7 @@
         <!-- Separador -->
         <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>
         <p class="text-md text-gray-600 leading-relaxed">
-          {{ obtenerDescripcionContinente(continente) }}
+          {{ obtenerDescripcionContinente(String(continente)) }}
         </p>
         <!-- Scroll horizontal -->
         <div class="flex space-x-4 overflow-x-auto py-2 scroll-hide">
@@ -38,6 +38,11 @@ import CardPais from '@/components/users/paises/components/CardPais.vue'
 import Loader from '@/components/Loader.vue'
 import { defineComponent } from 'vue'
 import ImagenCabecera from '../userBasic/ImagenCabecera.vue'
+import type {Pais} from '@/types'
+
+interface PaisesPorContinente {
+  [continenteNombre: string]: Pais[]
+}
 
 export default defineComponent({
   components: {
@@ -100,25 +105,21 @@ export default defineComponent({
       return this.paisesStore.items
     },
     paisesPorContinente() {
-      const resultado = {}
+      const resultado:PaisesPorContinente = {}
       this.continentes.forEach((continente) => {
         const paisesDelContinente = this.paises.filter(
           (pais) => pais.continente && pais.continente.id === continente.id,
         )
-
-        // Solo añadimos si hay países (opcional, puedes quitar esta condición si quieres mostrar todos)
         if (paisesDelContinente.length > 0) {
           resultado[continente.nombre] = paisesDelContinente
         }
-        console.log(paisesDelContinente)
       })
-      console.log(resultado)
       return resultado
     },
   },
   methods: {
     //     ...mapActions(usePaisesStore,['fetchAll'])
-    obtenerDescripcionContinente(nombre) {
+    obtenerDescripcionContinente(nombre:string) {
       const continente = this.continentes.find((c) => c.nombre === nombre)
       return continente ? continente.descripcion : ''
     },

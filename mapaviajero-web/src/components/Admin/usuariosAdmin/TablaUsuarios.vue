@@ -17,6 +17,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import type {Usuario} from '@/types';
 import { useUsuariosStore } from '@/stores/usuariosStore'
 import TablaEditable from '../adminBasic/TablaEditable.vue';
 import ErrorModal from '@/components/error/ErrorModal.vue';
@@ -45,7 +46,7 @@ export default defineComponent({
     this.usuariosStore.fetchAll()
   },
   methods: {
-    async crear(datos: any) {
+    async crear(datos: Usuario) {
       try {
         await this.usuariosStore.createItem({ ...datos });
         alert('Usuario creado correctamente');
@@ -53,7 +54,7 @@ export default defineComponent({
         this.error = err;
       }
     },
-    async actualizar(datos) {
+    async actualizar(datos: Usuario) {
       try{
         await this.usuariosStore.updateItem({ ...datos},true)
         alert('Usuario actualizado correctamente')

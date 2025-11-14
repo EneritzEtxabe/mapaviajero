@@ -42,7 +42,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     ),
  *     @OA\Property(
  *         property="cliente", 
- *         type="string",
+ *         type="object",
  *         @OA\Property(property="id", type="integer", example=3),
  *         @OA\Property(property="nombre", type="string", example="José"),
  *         @OA\Property(property="email", type="email", example="josé@gmail.com"),

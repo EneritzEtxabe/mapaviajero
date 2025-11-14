@@ -1,5 +1,7 @@
-import { defineStore } from 'pinia'
 import { createCrudStore } from './helpers/createCrudStore'
+import type { CarroceriaCoche } from '@/types'
 
-const store = createCrudStore('http://localhost:8000/api/carroceriaCoches')
-export const useCarroceriasCocheStore = defineStore('carroceriaCoches',store)
+export const useCarroceriasCocheStore = createCrudStore<CarroceriaCoche>(
+  'carroceriaCoches',
+  'http://localhost:8000/api/carroceriaCoches'
+)

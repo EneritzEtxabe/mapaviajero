@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import type { CarroceriaCoche } from '@/types'
 import { useCarroceriasCocheStore } from '@/stores/carroceriasCocheStore'
 import ErrorModal from '@/components/error/ErrorModal.vue'
 
@@ -44,7 +45,7 @@ export default defineComponent({
     this.carroceriasCocheStore.fetchAll()
   },
   methods: {
-    async crear(datos: any) {
+    async crear(datos:CarroceriaCoche) {
       try {
         await this.carroceriasCocheStore.createItem({ ...datos });
         alert('Carrocería de coche creada correctamente');
@@ -52,7 +53,7 @@ export default defineComponent({
         this.error = err;
       }
     },
-    async actualizar(datos) {
+    async actualizar(datos:CarroceriaCoche) {
       try{
         await this.carroceriasCocheStore.updateItem({ ...datos},true)
         alert('Carrocería actualizada correctamente')

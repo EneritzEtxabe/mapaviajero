@@ -1,21 +1,28 @@
 import { useCrud } from "@/components/Admin/adminBasic/BaseCrud"
+import { type Store, defineStore } from 'pinia'
+interface CrudState<T> {
+  items: T[]
+  item: T | null
+  loading: boolean
+  error: string | null
+}
 
-export function createCrudStore(apiUrl:string){
+export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:string){
     const crud = useCrud(apiUrl)
-    function manejarError(e: any) {
+    function manejarError(this: Store<string, CrudState<T>>, e:any) {
         const mensaje = e?.response?.data?.message || e.message || 'Error al cargar los datos'
         this.error = mensaje
         throw e
     }
-    return {
-        state: () => ({
+    return defineStore (storeName, {
+        state: (): CrudState<T> => ({
             items: [],
-            item: {},
+            item: null,
             loading: false,
             error: null,
         }),
         actions: {
-            async fetchAll() {
+            async fetchAll(this: Store<string, CrudState<T>>) {
                 this.loading = true
                 this.error = null
                 try {
@@ -28,7 +35,7 @@ export function createCrudStore(apiUrl:string){
                     this.loading = false
                 }
             },
-            async getItem(id: number) {
+            async getItem(this: Store<string, CrudState<T>>,id: number) {
                 this.loading = true
                 this.error = null
                 try {
@@ -41,7 +48,7 @@ export function createCrudStore(apiUrl:string){
                     this.loading = false
                 }
             },
-            async createItem(data: any) {
+            async createItem(this: Store<string, CrudState<T>>, data: T) {
                 this.loading = true
                 this.error = null
                 const idTemporal=Date.now()
@@ -53,8 +60,6 @@ export function createCrudStore(apiUrl:string){
                     if(index!==-1){
                         this.items.splice(index,1,res.data.data)
                     }
-                    // this.items.push(res.data.data)
-                    // return res
                 } catch (e) {
                     this.items = this.items.filter(i =>i.id !==idTemporal)
                     manejarError.call(this,e)
@@ -62,11 +67,11 @@ export function createCrudStore(apiUrl:string){
                     this.loading = false
                 }
             },
-            async updateItem(data: any, optimista=false) {
+            async updateItem(this: Store<string, CrudState<T>>, data: T, optimista=false) {
                 this.loading = true
                 this.error = null
                 let index = -1
-                let copiaItem:any=null
+                let copiaItem: T | null=null
 
                 if(optimista){
                     index=this.items.findIndex(i=>i.id === data.id)
@@ -98,14 +103,13 @@ export function createCrudStore(apiUrl:string){
                     this.loading = false
                 }
             },
-            async deleteItem(id: number) {
+            async deleteItem(this: Store<string, CrudState<T>>, id: number) {
                 this.loading = true
                 this.error = null
                 const copiaItems =[...this.items]
                 this.items=this.items.filter(i=>i.id!==id)
                 try {
                     await crud.deleteItem(id)
-                    // this.items = this.items.filter(i => i.id !== id)
                 } catch (e) {
                     this.items = copiaItems
                     manejarError.call(this,e)
@@ -114,5 +118,5 @@ export function createCrudStore(apiUrl:string){
                 }
             }
         }
-    }
+    })
 }

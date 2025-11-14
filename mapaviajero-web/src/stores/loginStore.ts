@@ -36,7 +36,7 @@ export const useLoginStore = defineStore('login', {
         this.token=response.data.token;
         api.defaults.headers.common['Authorization']=`Bearer ${this.token}`;
         await this.fetchUser();
-      } catch (err: any) {
+      } catch (err) {
         this.error = err.response?.data?.message || 'Error al iniciar sesión';
       } finally {
         this.loading = false;
@@ -58,8 +58,8 @@ export const useLoginStore = defineStore('login', {
           nombre:data.nombre,
           rol:data.rol
         };
-      } catch (error) {
-        this.error = 'No se pudo obtener el usuario';
+      } catch (err) {
+        this.error = err.response?.data?.message || 'No se pudo obtener el usuario';
       }
     },
     async logout() {
@@ -74,8 +74,8 @@ export const useLoginStore = defineStore('login', {
             }
           )
         }
-      } catch (error) {
-        console.error('Error al cerrar sesión en el backend:', error);
+      } catch (err) {
+        console.error('Error al cerrar sesión en el backend:', err);
       } finally {
         this.token = null;
         this.user = null;

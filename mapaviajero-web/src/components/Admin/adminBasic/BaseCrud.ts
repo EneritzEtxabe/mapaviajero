@@ -5,7 +5,6 @@ export function useCrud(apiUrl: string) {
     async fetchAll() {
       try{
         const res = await api.get(apiUrl)
-        // return res.data
         return res
       }catch(error){
         console.log("La consulta ha fallado:", error)
@@ -16,7 +15,6 @@ export function useCrud(apiUrl: string) {
     async createItem(item: any) {
       try{
         const res = await api.post(apiUrl, item)
-        // return res.data
         return res
       }catch(error){
         console.log("La consulta ha fallado:", error)
@@ -27,7 +25,6 @@ export function useCrud(apiUrl: string) {
     async getItem(id: number) {
       try{
         const res = await api.get(`${apiUrl}/${id}`)
-        // return res.data
         return res
       }catch(error){
         console.log("La consulta ha fallado:", error)
@@ -38,7 +35,6 @@ export function useCrud(apiUrl: string) {
     async updateItem(item: any) {
       try{
         const res = await api.put(`${apiUrl}/${item.id}`, item)
-        // return res.data
         return res
       }catch(error){
         console.log("La consulta ha fallado:", error)
