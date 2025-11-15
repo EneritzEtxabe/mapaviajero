@@ -13,8 +13,8 @@ use App\Models\Pais;
  * @OA\OpenApi(
  *     @OA\Info(
  *         version="1.0.0",
- *         title="Travel App API",
- *         description="Documentación de la API Travel App"
+ *         title="mapaviajero-api",
+ *         description="Documentación de la API mapaviajero-api"
  *     ),
  *     @OA\Server(
  *         url="http://localhost:8000",

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -34,22 +35,51 @@ class LoginController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Credenciales incorrectas")
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Errores de validación",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=429,
+     *         description="Demasiados intentos fallidos",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Demasiados intentos fallidos. Inténtalo más tarde")
+     *         )
      *     )
      * )
      */
-    public function login(Request $request){
-        $credentials = $request->only('email','password');
-        if (!Auth::attempt($credentials)){
-            return response()->json(['message'=>'Credenciales incorrectas'], 401);
-        }
-        $user = Auth::user();
-        $token = $user->createToken('api-token')->plainTextToken;
-        return response()->json(['token'=>$token], 200);
+    public function login(LoginRequest $request): JsonResponse{
+        $request ->authenticate();
+        $token = $request->user()->createToken('api-token')->plainTextToken;
+        return response()->json(['token'=>$token, 'message'=>'Login exitoso. Utilice este Token en el header: Authorization: Bearer'], 200);
     }
-
-    public function logout(Request $request)
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     tags={"Logout"},
+     *     summary="Logout de usuario",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout exitoso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Sesión cerrada correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado o token inválido"
+     *     )
+     * )
+     */
+    public function logout(Request $request):JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Sesión cerrada correctamente']);
+        return response()->json(['message' => 'La sesión se ha cerrado correctamente']);
     }
 }

@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Travel App API",
-        "description": "Documentación de la API Travel App",
+        "title": "mapaviajero-api",
+        "description": "Documentación de la API mapaviajero-api",
         "version": "1.0.0"
     },
     "servers": [
@@ -1539,8 +1539,77 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Demasiados intentos fallidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Demasiados intentos fallidos. Inténtalo más tarde"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Logout"
+                ],
+                "summary": "Logout de usuario",
+                "operationId": "1c47304702d04fb816034d80b2ad0505",
+                "responses": {
+                    "200": {
+                        "description": "Logout exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sesión cerrada correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado o token inválido"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/lugares": {
@@ -4098,6 +4167,10 @@
         {
             "name": "Login",
             "description": "Login"
+        },
+        {
+            "name": "Logout",
+            "description": "Logout"
         },
         {
             "name": "Lugares",

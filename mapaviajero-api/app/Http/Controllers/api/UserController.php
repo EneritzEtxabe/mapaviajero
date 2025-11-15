@@ -4,10 +4,13 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+
 use Laravel\Sanctum\PersonalAccessToken;
 
 use App\Models\User;
@@ -45,7 +48,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         if(Gate::denies('es-admin') && Gate::denies('es-superadmin')){
             return response()->json(['message'=>'Solo los administradores pueden ver todos los usuarios'], 403);
@@ -94,42 +97,9 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request):JsonResponse
     {
-        $data = $request->validate(
-            [
-                'nombre' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password'=>'required|string|min:8',
-                'telefono' => 'nullable|numeric|digits:9|unique:users,telefono',
-                'dni' => 'nullable|regex:/^\d{8}[A-HJ-NP-TV-Z]$/i|unique:users,dni',
-                'rol'=>'nullable|in:superadmin,admin,cliente',
-            ],
-            [
-                'nombre.required' => 'Introduce tu nombre.',
-                'nombre.string' => 'El nombre debe ser una cadena de texto.',
-                'nombre.max' => 'El nombre no puede tener más de 255 caracteres.',
-
-                'email.required' => 'El correo electrónico es obligatorio.',
-                'email.email' => 'El correo electrónico no tiene un formato válido.',
-                'email.unique' => 'Ya existe un usuario con ese correo electrónico.',
-
-                'password.required' => 'Introduce una contraseña.',
-                'password.string' => 'La contraseña debe ser una cadena de texto.',
-                'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-
-                'telefono.numeric' => 'El teléfono debe contener solo números.',
-                'telefono.digits' => 'El teléfono debe tener exactamente 9 dígitos.',
-                'telefono.unique' => 'Ya existe un usuario con ese número de teléfono.',
-
-                'dni.regex' => 'El DNI debe tener un formato válido (8 números seguidos de una letra).',
-                'dni.unique' => 'Ya existe un usuario con ese DNI.',
-
-                'rol.in' => 'El rol seleccionado no es válido. Debe ser "superadmin" "admin" o "cliente".',
-            ],
-        );
-
-        $data['password'] = Hash::make($data['password']);
+        $data = $request->validated();
 
         $token = $request->bearerToken();
 
@@ -279,7 +249,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function update(Request $request, string $id)
+    public function update(UserUpdateRequest $request, string $id):JsonResponse
     {
         $usuario = User::find($id);
 
@@ -309,35 +279,7 @@ class UserController extends Controller
                 break;
         }
     
-        $data = $request->validate([
-                'nombre' => 'sometimes|string|max:255',
-                'email' => 'sometimes|email|unique:users,email,'.$usuario->id,
-                'password'=>'sometimes|string|min:8',
-                'telefono' => 'nullable|numeric|digits:9|unique:users,telefono,'.$usuario->id,
-                'dni' => 'nullable|regex:/^\d{8}[A-HJ-NP-TV-Z]$/i|unique:users,dni,'.$usuario->id,
-                'rol'=>'nullable|in:superadmin,admin,cliente',
-            ],
-            [
-                'nombre.string' => 'El nombre debe ser una cadena de texto.',
-                'nombre.max' => 'El nombre no puede tener más de 255 caracteres.',
-
-                'email.email' => 'El correo electrónico no tiene un formato válido.',
-                'email.unique' => 'Ya existe un usuario con ese correo electrónico.',
-
-                'password.string' => 'La contraseña debe ser una cadena de texto.',
-                'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-
-                'telefono.numeric' => 'El teléfono debe contener solo números.',
-                'telefono.digits' => 'El teléfono debe tener exactamente 9 dígitos.',
-                'telefono.unique' => 'Ya existe un usuario con ese número de teléfono.',
-
-                'dni.regex' => 'El DNI debe tener un formato válido (8 números seguidos de una letra).',
-                'dni.unique' => 'Ya existe un usuario con ese DNI.',
-
-                'rol.in' => 'El rol seleccionado no es válido. Debe ser "superadmin" "admin" o "cliente".',
-            ],
-        );
-        
+        $data = $request->validated();
         if (isset($data['rol'])){
             if(!Auth::check() || Gate::denies('es-superadmin')){
                 return response()->json(['message'=>'Solo el superadministrador puede modificar el rol'], 403);

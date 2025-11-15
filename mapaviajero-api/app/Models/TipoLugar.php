@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TipoLugar extends Model
 {
+    use HasFactory;
     protected $table = 'tipo_lugares';
     protected $fillable = ['nombre'];
 
