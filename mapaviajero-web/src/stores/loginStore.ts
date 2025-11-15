@@ -21,22 +21,13 @@ export const useLoginStore = defineStore('login', {
       this.loading = true;
       this.error = null;
       try {
-        await api.get('/sanctum/csrf-cookie');
-        const response = await api.post('/api/login', 
-          { 
-            email, password 
-          },
-          {
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            }
-          }
-        );
+        const response = await api.post('/api/login', {email, password});
         this.token=response.data.token;
-        api.defaults.headers.common['Authorization']=`Bearer ${this.token}`;
+        // Cargar datos del usuario
         await this.fetchUser();
-      } catch (err) {
+        // Redirigimos (todavía sin elegir una vista)
+        router.push('/')
+      } catch (err: any) {
         this.error = err.response?.data?.message || 'Error al iniciar sesión';
       } finally {
         this.loading = false;
@@ -44,51 +35,30 @@ export const useLoginStore = defineStore('login', {
     },
     async fetchUser() {
       try {
-        const userInfo = await api.get('/api/user',
-          {
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+        const userInfo = await api.get('/api/user');
         const data = userInfo.data;
         this.user={
           id:data.id,
           nombre:data.nombre,
           rol:data.rol
         };
-      } catch (err) {
+      } catch (err: any) {
         this.error = err.response?.data?.message || 'No se pudo obtener el usuario';
       }
     },
     async logout() {
       try {
         if (this.token) {
-          await api.post('/api/logout', {},
-            {
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-            }
-          )
+          await api.post('/api/logout')
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error al cerrar sesión en el backend:', err);
       } finally {
         this.token = null;
         this.user = null;
-        delete api.defaults.headers.common['Authorization'];
-        router.push('/');
+        router.push('/login');
       }
     },
-    initialize() {
-      // Configura axios si ya hay token guardado
-      if (this.token) {
-        api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-      }
-    }
   },
   persist:true
 });

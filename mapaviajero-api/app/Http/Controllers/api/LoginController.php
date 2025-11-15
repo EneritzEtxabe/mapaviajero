@@ -55,7 +55,9 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse{
         $request ->authenticate();
-        $token = $request->user()->createToken('api-token')->plainTextToken;
+        $user = $request->user();
+        $user->tokens()->delete();
+        $token = $user->createToken('api-token')->plainTextToken;
         return response()->json(['token'=>$token, 'message'=>'Login exitoso. Utilice este Token en el header: Authorization: Bearer'], 200);
     }
     /**

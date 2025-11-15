@@ -175,7 +175,13 @@ router.beforeEach(async (to, from, next) => {
       return next({ name: 'login' });
     }
     if (!loginStore.user) {
-      await loginStore.fetchUser();
+      try{
+        await loginStore.fetchUser();
+      }catch(err: any){
+        loginStore.token = null;
+        loginStore.user=null;
+        return next({name:'login'})
+      }
     }
     if (to.meta.roles && Array.isArray(to.meta.roles)) {
       const userRole = loginStore.user?.rol;
