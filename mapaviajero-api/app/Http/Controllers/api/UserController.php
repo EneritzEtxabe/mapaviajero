@@ -257,7 +257,7 @@ class UserController extends Controller
             return response()->json(['message'=>'Usuario no encontrado'], 404);
         }
 
-        if ($usuario->rol !== 'superadmin') {
+        if(Gate::denies('es-superadmin')){
             $request->request->remove('rol'); 
         }
 
@@ -280,11 +280,7 @@ class UserController extends Controller
         }
     
         $data = $request->validated();
-        if (isset($data['rol'])){
-            if(!Auth::check() || Gate::denies('es-superadmin')){
-                return response()->json(['message'=>'Solo el superadministrador puede modificar el rol'], 403);
-            }
-        }
+    
         if (isset($data['password'])){
             $data['password'] = Hash::make($data['password']);
         }

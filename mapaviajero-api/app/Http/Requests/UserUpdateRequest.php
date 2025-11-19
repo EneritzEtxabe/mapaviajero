@@ -13,7 +13,7 @@ class UserUpdateRequest extends FormRequest
     }
     public function rules(): array
     {
-        $userId = $this->route('id');
+        $userId = $this->route('user');
         return [
             'nombre' => 'sometimes|string|max:255',
             'email' => ['sometimes','email',Rule::unique('users', 'email')->ignore($userId)],
@@ -31,7 +31,7 @@ class UserUpdateRequest extends FormRequest
             'nombre.max' => 'El nombre no puede tener más de 255 caracteres.',
 
             'email.email' => 'El correo electrónico no tiene un formato válido.',
-            'email.unique' => 'Ya existe un usuario con ese correo electrónico.',
+            'email.unique' => 'Ya existe un usuario con ese correo electrónico',
 
             'password.string' => 'La contraseña debe ser una cadena de texto.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
