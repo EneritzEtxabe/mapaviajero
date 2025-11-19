@@ -1,4 +1,5 @@
 import { useCrud } from "@/components/Admin/adminBasic/BaseCrud"
+import type { AxiosError } from "axios"
 import { type Store, defineStore } from 'pinia'
 interface CrudState<T> {
   items: T[]
@@ -9,8 +10,9 @@ interface CrudState<T> {
 
 export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:string){
     const crud = useCrud(apiUrl)
-    function manejarError(this: Store<string, CrudState<T>>, e:any) {
-        const mensaje = e?.response?.data?.message || e.message || 'Error al cargar los datos'
+    function manejarError(this: Store<string, CrudState<T>>, e:unknown) {
+        const error=e as AxiosError<{message:string}>
+        const mensaje = error?.response?.data?.message || error.message || 'Error al cargar los datos'
         this.error = mensaje
         throw e
     }
@@ -52,8 +54,8 @@ export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:
                 this.loading = true
                 this.error = null
                 const idTemporal=Date.now()
-                const nuevoItem={...data, id:idTemporal}
-                this.items.push(nuevoItem)
+                const nuevoItem={...data, id:idTemporal};
+                this.items.push(nuevoItem);
                 try {
                     const res = await crud.createItem(data)
                     const index = this.items.findIndex(i => i.id === idTemporal)
@@ -97,7 +99,6 @@ export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:
                     if(optimista &&index!==-1&&copiaItem){
                         this.items.splice(index, 1, copiaItem)
                     }
-
                     manejarError.call(this,e)
                 } finally {
                     this.loading = false

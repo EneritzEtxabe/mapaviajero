@@ -13,9 +13,8 @@ use App\Http\Controllers\api\CocheController;
 use App\Http\Controllers\api\AlquilerController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\LoginController;
-use App\Http\Middlewares\ExistenciaUser;
 
-Route::middleware(['auth:sanctum', ExistenciaUser::class])->group(function(){
+Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/user', function(Request $request){
         return $request->user();
     });

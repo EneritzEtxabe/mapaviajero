@@ -13,12 +13,12 @@
           <Boton
             type="generalDark"
             label="Vista admin"
-            :to="{ name: 'admin-panel' }"
+            :to="{ name:'admin-panel' }"
             :customClasses="'text-center'"
           />
         </li>
         <li v-if="!isAuthenticated">
-          <router-link :to="{name:'login'}" class="text-md inline-flex items-center justify-center h-9 px-3 pl-20 hover:underline">Login</router-link>
+          <router-link :to="{name:'login'}" class="text-md inline-flex items-center justify-center h-9 px-3 pl-20 hover:underline" @click="loginStore.error=null">Login</router-link>
         </li>
         <li v-if="isAuthenticated">
           <a href="#" @click.prevent="logout" class="text-md inline-flex items-center justify-center h-9 px-3 pl-20 hover:underline">Logout</a>

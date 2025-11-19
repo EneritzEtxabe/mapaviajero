@@ -26,6 +26,7 @@ import TablaUsuarios from '@/components/Admin/usuariosAdmin/TablaUsuarios.vue'
 //------------------- Para login -------------------
 import LoginContainer from '@/components/login/LoginContainer.vue'
 import { useLoginStore } from '@/stores/loginStore'
+import type { AxiosError } from 'axios'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -177,7 +178,8 @@ router.beforeEach(async (to, from, next) => {
     if (!loginStore.user) {
       try{
         await loginStore.fetchUser();
-      }catch(err: any){
+      }catch(err){
+        const error = err as AxiosError<{message:string}>;
         loginStore.token = null;
         loginStore.user=null;
         return next({name:'login'})

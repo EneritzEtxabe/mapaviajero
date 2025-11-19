@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import api from '../axios/axios';
 import router from '@/router';
+import type { AxiosError } from 'axios';
 
 export const useLoginStore = defineStore('login', {
   state: () => ({
@@ -23,12 +24,12 @@ export const useLoginStore = defineStore('login', {
       try {
         const response = await api.post('/api/login', {email, password});
         this.token=response.data.token;
-        // Cargar datos del usuario
         await this.fetchUser();
         // Redirigimos (todavía sin elegir una vista)
         router.push('/')
-      } catch (err: any) {
-        this.error = err.response?.data?.message || 'Error al iniciar sesión';
+      } catch (err) {;
+        const error = err as AxiosError<{message:string}>
+        this.error = error.response?.data?.message || 'Error al iniciar sesión';
       } finally {
         this.loading = false;
       }
@@ -42,17 +43,19 @@ export const useLoginStore = defineStore('login', {
           nombre:data.nombre,
           rol:data.rol
         };
-      } catch (err: any) {
-        this.error = err.response?.data?.message || 'No se pudo obtener el usuario';
+      } catch (err) {
+        const error = err as AxiosError<{message:string}>;
+        this.error = error.response?.data?.message || 'No se pudo obtener el usuario';
       }
     },
-    async logout() {
+    async logout(requestBackend: boolean=true) {
       try {
-        if (this.token) {
+        if (requestBackend && this.token) {
           await api.post('/api/logout')
         }
-      } catch (err: any) {
-        console.error('Error al cerrar sesión en el backend:', err);
+      } catch (err) {
+        const error = err as AxiosError<{message:string}>;
+        this.error = error.response?.data?.message || 'Error al cerrar sesión en el backend';
       } finally {
         this.token = null;
         this.user = null;
