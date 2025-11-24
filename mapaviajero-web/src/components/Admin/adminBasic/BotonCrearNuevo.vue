@@ -9,7 +9,7 @@
 
 </template>
 <script lang="ts">
-import Boton from "@/components/basic/Boton.vue";
+import Boton from "@/components/basic/BotonComponent.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({

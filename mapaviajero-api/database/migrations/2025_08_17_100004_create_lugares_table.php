@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('lugares', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('nombre')->unique();
             $table->foreignId('pais_id')->constrained('paises')->onDelete('cascade');
             $table->text('descripcion')->nullable();
             $table->string('imagen_url')->nullable();
-            $table->string('web_url')->nullable();
-            $table->text('localizacion_url')->nullable();
+            $table->string('web_url')->nullable()->unique();
+            $table->text('localizacion_url')->nullable()->unique();
             $table->timestamps();
         });
     }

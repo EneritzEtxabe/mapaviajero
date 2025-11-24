@@ -20,7 +20,7 @@ class UserUpdateRequest extends FormRequest
             'password'=>'sometimes|string|min:8',
             'telefono' => ['nullable','numeric','digits:9', Rule::unique('users', 'telefono')->ignore($userId)],
             'dni' => ['nullable','regex:/^\d{8}[A-HJ-NP-TV-Z]$/i', Rule::unique('users', 'dni')->ignore($userId)],
-            'rol'=>'nullable|in:superadmin,admin,cliente',
+            'rol'=>'sometimes|in:superadmin,admin,cliente',
         ];
     }
 

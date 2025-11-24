@@ -19,7 +19,7 @@ class UserStoreRequest extends FormRequest
             'password' => 'required|string|min:8',
             'telefono' => 'nullable|numeric|digits:9|unique:users,telefono',
             'dni' => 'nullable|regex:/^\d{8}[A-HJ-NP-TV-Z]$/i|unique:users,dni',
-            'rol' => 'nullable|in:superadmin,admin,cliente',
+            'rol' => 'sometimes|in:superadmin,admin,cliente',
         ];
     }
 

@@ -40,7 +40,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   props:{
     imagenes:{
-      type:Array,
+      type:Array as () =>string[],
       required:true
     },
     alt:String,
@@ -51,7 +51,7 @@ export default defineComponent({
   data() {
     return {
       imagenActual: 0,
-      intervalo: null,
+      intervalo: null as number | null,
     }
   },
   methods: {
@@ -65,7 +65,10 @@ export default defineComponent({
       this.intervalo = setInterval(this.siguiente, 10000)
     },
     detenerCarrusel() {
-      clearInterval(this.intervalo)
+      if (this.intervalo !== null) {
+        clearInterval(this.intervalo)
+        this.intervalo = null
+      }
     },
   },
   mounted() {

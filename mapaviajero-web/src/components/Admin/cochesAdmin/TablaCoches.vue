@@ -15,26 +15,28 @@
     />
   </div>
   <BaseTable
-    :itemsFiltrados="cochesFiltrados"
+    :itemsFiltrados="datosParaMostrar"
     :columns="columns"
+    :loading="loading"
+    :error="error"
     @edit="editar"
     @delete="eliminar"
   />
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
 import { useCochesStore } from '@/stores/cochesStore'
 
 import BaseTable from '@/components/Admin/adminBasic/BaseTable.vue'
-import Boton from '@/components/basic/Boton.vue'
-import Buscador from '@/components/basic/Buscador.vue'
+import Boton from '@/components/basic/BotonComponent.vue'
+import Buscador from '@/components/basic/BuscadorComponent.vue'
 
 export default defineComponent({
   components:{BaseTable, Boton, Buscador},
   data() {
     return{
-      cochesStore: useCochesStore(),
       filtro:'',
       columns: [
         { key:'id', label:'id'},
@@ -50,9 +52,7 @@ export default defineComponent({
     }
   },
   computed: {
-    coches(){
-      return this.cochesStore.items
-    },
+    ...mapState(useCochesStore,{loading:'loading', error:'error', coches:'items'}),
     cochesFiltrados() {
       if (!this.filtro){
         return this.coches
@@ -61,18 +61,34 @@ export default defineComponent({
           return coche.marca.nombre.toLowerCase().startsWith(this.filtro.toLowerCase())
         })
       }
-    }
+    },
+    datosParaMostrar(){
+      return this.cochesFiltrados.map(c => ({
+        id:c.id,
+        marca: c.marca.nombre,
+        carroceria:c.carroceria.nombre,
+        ano:c.ano,
+        nPlazas:c.nPlazas,
+        cambio:c.cambio,
+        estado:c.estado,
+        costeDia:c.costeDia,
+        pais:c.pais.nombre
+      }))
+    },
   },
   created() {
-    this.cochesStore.fetchAll()
+    this.getCoches()
   },
   methods: {
-    editar(id) {
+    getCoches(){
+      useCochesStore().fetchAll()
+    },
+    editar(id:number) {
       this.$router.push({ name: 'editarCoche', params: { id: id } })
     },
     async eliminar(id: number) {
       if (confirm('¿Estás seguro de que deseas eliminar este coche?')) {
-        await this.cochesStore.deleteItem(id)
+        await useCochesStore().deleteItem(id)
       }
     }
   }

@@ -1,7 +1,7 @@
 import { createCrudStore } from './helpers/createCrudStore'
-import type { Usuario } from '@/types'
+import type { Usuario, CreateUsuario, UpdateUsuario } from '@/types'
 
-export const useUsuariosStore = createCrudStore<Usuario>(
+export const useUsuariosStore = createCrudStore<Usuario, CreateUsuario, UpdateUsuario>(
   'usuarios',
   'http://localhost:8000/api/users'
 )

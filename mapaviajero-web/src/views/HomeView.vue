@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Carousel from '@/components/users/userBasic/Carousel.vue'
+import Carousel from '@/components/users/userBasic/CarouselCabecera.vue'
 import HomeIntro from '@/components/users/home/HomeIntro.vue'
 import HomeDestinos from '@/components/users/home/HomeDestinos.vue'
 import { useLugaresStore } from '@/stores/lugaresStore'

@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <ErrorModal :error="error"/>
+     <Loader :loading="loading" :error="error"></Loader>
       <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">LISTA DE MARCAS DE COCHES</h2>     
       <!-- Separador -->
       <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>
@@ -8,6 +8,8 @@
         :items="marcasCoche"
         :columns="columns"
         :mostrarBotonCrear="true"
+        :loading="loading"
+        :error="error"
         @create="crear"
         @update="actualizar"
         @delete="eliminar"
@@ -16,55 +18,44 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
 import { useMarcasCocheStore } from '@/stores/marcasCocheStore'
-import ErrorModal from '@/components/error/ErrorModal.vue'
+import Loader from '@/components/LoaderComponent.vue'
 
 import TablaEditable from '../adminBasic/TablaEditable.vue'
+import type { CreateMarcaCoche, UpdateMarcaCoche } from '@/types';
 
 export default defineComponent({
-  components:{TablaEditable, ErrorModal},
+  components:{TablaEditable, Loader},
   data() {
     return{
-      marcasCocheStore: useMarcasCocheStore(),
       columns: [
         { key: 'nombre', label: 'MARCA DE COCHE' },
       ],
-      error:null,
     }
   },
   computed: {
-    marcasCoche(){
-      return this.marcasCocheStore.items
-    }
+    ...mapState(useMarcasCocheStore,{loading:'loading', error:'error', marcasCoche:'items'}),
   },
   created() {
-    this.marcasCocheStore.fetchAll()
+    this.getMarcasCoche()
   },
   methods: {
-    async crear(datos: any) {
-      try {
-        await this.marcasCocheStore.createItem({ ...datos });
-        alert('Marca de coche creada correctamente');
-      } catch (err) {
-        this.error = err;
-      }
+    getMarcasCoche(){
+      useMarcasCocheStore().fetchAll()
     },
-    async actualizar(datos) {
-      try{
-        await this.marcasCocheStore.updateItem({ ...datos},true)
-        alert('Marca de coche actualizada correctamente')
-      }catch(err){
-        this.error=err
-      }
+    async crear(datos: CreateMarcaCoche) {
+      await useMarcasCocheStore().createItem({ ...datos });
+      alert('Marca de coche creada correctamente');
+    },
+    async actualizar(datos:UpdateMarcaCoche) {
+      await useMarcasCocheStore().updateItem({ ...datos},true)
+      alert('Marca de coche actualizada correctamente')
     },
     async eliminar(id: number) {
       if (confirm('¿Estás seguro de que deseas eliminar esta marca de coches?')) {
-        try{
-          await this.marcasCocheStore.deleteItem(id)
-        }catch(err){
-          this.error=err
-        }
+        await useMarcasCocheStore().deleteItem(id)
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <ErrorModal :error="error" />
+    <Loader :loading="loading" :error="error">
     <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">
       LISTA DE IDIOMAS
     </h2>
@@ -10,64 +10,56 @@
       :items="idiomas"
       :columns="columns"
       :mostrarBotonCrear="true"
+      :loading="loading"
+      :error="error"
       @create="crear"
       @update="actualizar"
       @delete="eliminar"
     />
+    </Loader>
   </div>
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
 import { useIdiomasStore } from '@/stores/idiomasStore'
-import ErrorModal from '@/components/error/ErrorModal.vue'
-
+import type { Idioma } from '@/types';
+import Loader from '@/components/LoaderComponent.vue'
 import TablaEditable from '@/components/Admin/adminBasic/TablaEditable.vue'
+import { useCarroceriasCocheStore } from '@/stores/carroceriasCocheStore';
 
 export default defineComponent({
-  components: { TablaEditable, ErrorModal },
+  components: { TablaEditable, Loader },
   data() {
     return {
-      idiomasStore: useIdiomasStore(),
       columns: [
         { key: 'nombre', label: 'Nombre' },
         { key: 'iso_639_1', label: 'iso_639_1' },
       ],
-      error: null,
     }
   },
   computed: {
-    idiomas() {
-      return this.idiomasStore.items
-    },
+     ...mapState(useIdiomasStore,{loading:'loading', error:'error', idiomas:'items'}),
   },
   created() {
-    this.idiomasStore.fetchAll()
+    this.getIdiomas()
   },
   methods: {
-    async crear(datos: any) {
-      try {
-        await this.idiomasStore.createItem({ ...datos })
-        alert('Idioma creado correctamente')
-      } catch (err) {
-        this.error = err
-      }
+    getIdiomas(){
+      useIdiomasStore().fetchAll()
     },
-    async actualizar(datos) {
-      try {
-        await this.idiomasStore.updateItem({ ...datos }, true)
-        alert('Idioma actualizado correctamente')
-      } catch (err) {
-        this.error = err
-      }
+    async crear(datos: Idioma) {
+      await useCarroceriasCocheStore().createItem({ ...datos })
+      alert('Idioma creado correctamente')
+    },
+    async actualizar(datos:Idioma) {
+      await useIdiomasStore().updateItem({ ...datos }, true)
+      alert('Idioma actualizado correctamente')
     },
     async eliminar(id: number) {
       if (confirm('¿Estás seguro de que deseas eliminar este idioma?')) {
-        try {
-          await this.idiomasStore.deleteItem(id)
-        } catch (err) {
-          this.error = err
-        }
+        await useIdiomasStore().deleteItem(id)
       }
     },
   },

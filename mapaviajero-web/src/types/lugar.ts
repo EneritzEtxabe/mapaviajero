@@ -13,10 +13,30 @@ export interface Lugar {
     imagen_url:string
     web_url:string
     localizacion_url:string
-    tipoLugares:[
+    tipo_lugar:[
         {
             id:number
             nombre:string
         }
     ]
+}
+
+export interface CreateLugar {
+  nombre: string
+  pais_id: number
+  descripcion?: string
+//   tipoLugares: number[]
+  imagen_url?: string
+  localizacion_url?: string
+  web_url?: string
+}
+export interface UpdateLugar{
+  id: number
+  nombre?: string
+  pais_id?: number
+  descripcion?: string
+//   tipoLugares?: number[]
+  imagen_url?: string
+  localizacion_url?: string
+  web_url?: string
 }

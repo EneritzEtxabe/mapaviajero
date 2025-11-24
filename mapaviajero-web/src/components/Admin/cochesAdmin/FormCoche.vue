@@ -1,13 +1,13 @@
 <template>
-<Loader :loading="loading">
+<Loader :loading="loading" :error="error">
   <div>
     <div class="max-w-xl mx-auto p-4">
       <h2 class="text-xl font-bold mb-4">{{ editMode ? 'Editar coche' : 'Crear coche' }}</h2>
       <form @submit.prevent="handleSubmit">
         <!-- Marca -->
         <div class="mb-4">
-          <label class="block mb-1">Marca</label>
-          <select v-model="form.marca_id" class="w-full border px-3 py-2 rounded">
+          <label class="block mb-1">Marca*</label>
+          <select v-model="form.marca_id" class="w-full border px-3 py-2 rounded" required>
             <option disabled value="">Selecciona una marca</option>
             <option v-for="m in marcasCoche" :key="m.id" :value="m.id">
               {{ m.nombre }}
@@ -17,8 +17,8 @@
 
         <!-- Carroceria -->
         <div class="mb-4">
-          <label class="block mb-1">Carrocería</label>
-          <select v-model="form.carroceria_id" class="w-full border px-3 py-2 rounded">
+          <label class="block mb-1">Carrocería*</label>
+          <select v-model="form.carroceria_id" class="w-full border px-3 py-2 rounded" required>
             <option disabled value="">Selecciona una carrocería</option>
             <option v-for="c in carroceriasCoche" :key="c.id" :value="c.id">
               {{ c.nombre }}
@@ -37,8 +37,8 @@
         </div>
         <!-- Nº plazas -->
         <div class="mb-4">
-          <label class="block mb-1">Nº plazas</label>
-          <select v-model="form.nPlazas" class="w-full border px-3 py-2 rounded">
+          <label class="block mb-1">Nº plazas*</label>
+          <select v-model="form.nPlazas" class="w-full border px-3 py-2 rounded" required>
             <option disabled value="">Selecciona el Nº plazas del coche</option>
             <option v-for="nPlazas in [2,4,5,7]" :key="nPlazas" :value="nPlazas">
               {{ nPlazas }}
@@ -68,18 +68,19 @@
         </div>
         <!-- Coste/Día-->
          <div class="mb-4">
-          <label class="block mb-1">Coste/Día (euros)</label>
+          <label class="block mb-1">Coste/Día (euros)*</label>
           <input
             v-model="form.costeDia"
             type="number"
             class="w-full border px-3 py-2 rounded"
             placeholder="Coste por día"
+            required
           />
         </div>
         <!-- País -->
         <div class="mb-4">
-          <label class="block mb-1">País</label>
-          <select v-model="form.pais_id" class="w-full border px-3 py-2 rounded">
+          <label class="block mb-1">País*</label>
+          <select v-model="form.pais_id" class="w-full border px-3 py-2 rounded" required>
             <option disabled value="">Seleccionas un país</option>
             <option v-for="p in paises" :key="p.id" :value="p.id">
               {{ p.nombre}}
@@ -108,13 +109,15 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
 import { usePaisesStore } from '@/stores/paisesStore'
 import { useCochesStore } from '@/stores/cochesStore'
 import { useMarcasCocheStore } from '@/stores/marcasCocheStore'
 import { useCarroceriasCocheStore } from '@/stores/carroceriasCocheStore'
-import Loader from '@/components/Loader.vue'
-import Boton from '@/components/basic/Boton.vue'
+import Loader from '@/components/LoaderComponent.vue'
+import Boton from '@/components/basic/BotonComponent.vue'
+import type { Estado, Cambio} from '@/types'
 
 export default defineComponent({
   components:{
@@ -129,77 +132,65 @@ export default defineComponent({
   },
   data() {
     return {
-      paisesStore:usePaisesStore(),
-      cochesStore:useCochesStore(),
-      marcasCocheStore:useMarcasCocheStore(),
-      carroceriasCocheStore:useCarroceriasCocheStore(),
-      loading:true,
-      form: {
-        marca_id: '',
-        carroceria_id: '',
-        ano: '',
-        nPlazas:'',
-        cambio: '',
-        estado: '',
-        costeDia: '',
-        pais_id:''
+      form:{
+        marca_id:0,
+        carroceria_id: 0,
+        ano: 0,
+        nPlazas:0,
+        cambio: null as Cambio | null,
+        estado: null as Estado | null,
+        costeDia: 0,
+        pais_id:0
       },
     }
   },
   computed: {
-    coche(){
-      return this.cochesStore.item
+    ...mapState(useCochesStore,{loadingCoche:'loading', errorCoche:'error', coche:'item'}),
+    ...mapState(usePaisesStore,{loadingPaises:'loading', errorPaises:'error', paises:'items'}),
+    ...mapState(useMarcasCocheStore,{loadingMarcasCoche:'loading', errorMarcasCoche:'error', marcasCoche:'items'}),
+    ...mapState(useCarroceriasCocheStore,{loadingCarroceriasCoche:'loading', errorCarroceriasCoche:'error', carroceriasCoche:'items'}),
+    loading(){
+      return(
+        this.loadingCoche || this.loadingPaises || this.loadingMarcasCoche || this.loadingCarroceriasCoche
+      )
     },
-    paises(){
-      return this.paisesStore.items 
-    },
-    marcasCoche(){
-      return this.marcasCocheStore.items 
-    },
-    carroceriasCoche(){
-      return this.carroceriasCocheStore.items 
+    error(){
+      return(
+        this.errorCoche || this.errorPaises || this.errorMarcasCoche ||this.errorCarroceriasCoche
+      )
     },
     editMode(){
-    return !!this.id
+      return !!this.id
     }
   },
   async created() {
-    this.loading=true;
     if(this.id){
-      await this.cochesStore.getItem(this.id as number);
+      await useCochesStore().getItem(this.id as number);
       this.form={
-        marca_id: this.coche.marca['id'],
-        carroceria_id: this.coche.carroceria['id'],
-        ano:this.coche.ano,
-        nPlazas:this.coche.nPlazas,
-        cambio: this.coche.cambio,
-        estado: this.coche.estado,
-        costeDia:this.coche.costeDia,
-        pais_id:this.coche.pais['id'],
+        marca_id: this.coche?.marca['id'] ?? 0,
+        carroceria_id: this.coche?.carroceria['id'] ?? 0,
+        ano:this.coche?.ano ?? 0,
+        nPlazas:this.coche?.nPlazas ?? 0,
+        cambio: this.coche?.cambio ?? null,
+        estado: this.coche?.estado ?? null,
+        costeDia:this.coche?.costeDia ?? 0,
+        pais_id:this.coche?.pais['id'] ?? 0,
       }
     }
-    await this.paisesStore.fetchAll();
-    await this.marcasCocheStore.fetchAll();
-    await this.carroceriasCocheStore.fetchAll();
-    this.loading=false;
+    await usePaisesStore().fetchAll();
+    await useMarcasCocheStore().fetchAll();
+    await useCarroceriasCocheStore().fetchAll();
   },
   methods: {
     async handleSubmit() {
-      try {
         if (this.editMode) {
-          await this.cochesStore.updateItem({ id: this.id, ...this.form },false)
+          await useCochesStore().updateItem({ id:Number(this.id!), ...this.form },false)
           alert('Coche actualizado correctamente')
         } else {
-          await this.cochesStore.createItem(this.form)
+          await useCochesStore().createItem(this.form)
           alert('Coche creado correctamente')
         }
-        // this.$emit('success') // Notificar al componente padre (si se usa)
-      } catch (e) {
-        console.error('Error al guardar el coche:', e)
-        alert('Ha ocurrido un error al guardar')
-      }finally{
         this.$router.push({ name: 'cochesAdmin' })
-      }
     },
     cancelar() {
       this.$router.push({ name: 'cochesAdmin' })

@@ -3,16 +3,14 @@
     <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">LISTA DE ALQUILERES DE COCHES</h2>     
     <!-- Separador -->
     <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>
-    <!-- <BaseTable
-      :items="alquileres"
-      :columns="columns"
-    /> -->
     <Buscador 
       v-model:filtro="filtro"
     />
      <BaseTable
-      :itemsFiltrados="alquileresFiltrados"
+      :itemsFiltrados="datosParaMostrar"
       :columns="columns"
+      :loading="loading"
+      :error="error"
       @edit="editar"
       @delete="eliminar"
     />
@@ -20,20 +18,23 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
 import { useAlquileresStore } from '@/stores/alquileresStore'
 
 import BaseTable from '@/components/Admin/adminBasic/BaseTable.vue'
-import Buscador from '@/components/basic/Buscador.vue';
+import Buscador from '@/components/basic/BuscadorComponent.vue';
+import type { UpdateAlquiler } from '@/types';
+
 
 export default defineComponent({
   components: {BaseTable, Buscador},
   data() {
     return{
-      alquileresStore: useAlquileresStore(),
       filtro:'',
       columns: [
         { key: 'coche', label: 'Coche id'},
+        { key: 'pais', label: 'Pais'},
         { key: 'cliente', label: 'Cliente'},
         { key: 'email', label: 'Email' },
         { key: 'fecha_inicio', label: 'Fecha inicio'},
@@ -43,9 +44,7 @@ export default defineComponent({
     }
   },
   computed: {
-    alquileres(){
-      return this.alquileresStore.items
-    },
+    ...mapState(useAlquileresStore,{loading:'loading', error:'error', alquileres:'items'}),
     alquileresFiltrados() {
       if (!this.filtro){
         return this.alquileres
@@ -54,18 +53,36 @@ export default defineComponent({
           return alquiler.cliente.nombre.toLowerCase().startsWith(this.filtro.toLowerCase())
         })
       }
-    }
+    },
+    datosParaMostrar(){
+      return this.alquileresFiltrados.map(a => ({
+        id:a.id,
+        coche: a.coche.id,
+        pais: a.coche.pais.nombre,
+        cliente: a.cliente.nombre,
+        email: a.cliente.email,
+        fecha_inicio: a.fecha_inicio,
+        fecha_fin: a.fecha_fin,
+        coste:a.coche.costeDia   
+      }))
+    },
   },
   created() {
-    this.alquileresStore.fetchAll()
+    this.getAlquileres()
   },
   methods: {
-    editar(alquiler: any) {
+    getAlquileres(){
+      useAlquileresStore().fetchAll()
+    },
+    deleteAlquiler(id:number){
+      useAlquileresStore().deleteItem(id)
+    },
+    editar(alquiler: UpdateAlquiler) {
       this.$router.push({ name: 'editarAlquiler', params: { id: alquiler.id } })
     },
     async eliminar(id: number) {
       if (confirm('¿Estás seguro de que deseas eliminar este alquiler?')) {
-        await this.alquileresStore.deleteItem(id)
+        await this.deleteAlquiler(id)
       }
     }
     // async crear(datos: any) {

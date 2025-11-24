@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import Boton from '@/components/basic/Boton.vue';
+import Boton from '@/components/basic/BotonComponent.vue';
 
     export default{
         props:['coche'],

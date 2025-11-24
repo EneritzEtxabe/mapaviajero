@@ -1,4 +1,5 @@
 <template>
+  <Loader :loading="loading" :error="error">
     <div class="relative border border-gray-300 rounded-md">
       <div class="overflow-x-auto relative">
         <table class="min-w-full table-auto text-sm border-collapse">
@@ -12,14 +13,9 @@
             <tr class="hover:bg--white transition duration-200" v-for="item in itemsFiltrados" :key="item.id">
               <td class="px-2 py-2 border-b border-gray-300 align-center max-w-xs" v-for="col in columns" :key="col.key">
                 <div v-if="Array.isArray(item[col.key])">
-                  <div v-for="(subItem, i) in item[col.key]" :key="i" class="line-clamp-2 text-ellipsis overflow-hidden">{{ subItem.nombre }}</div>
-                </div>
-                <!-- Caso 2: Objeto -->
-                <div
-                  v-else-if="typeof item[col.key] === 'object' && item[col.key] !== null"
-                  class="line-clamp-2 text-ellipsis overflow-hidden"
-                >
-                  {{ item[col.key].nombre ?? item[col.key].id }}
+                  <div v-for="(subItem, i) in item[col.key]" :key="i" class="line-clamp-2 text-ellipsis overflow-hidden"> 
+                    {{ subItem.nombre }}
+                  </div>
                 </div>
                 <div v-else class="line-clamp-2 text-ellipsis overflow-hidden">
                   {{ item[col.key] }}
@@ -47,41 +43,41 @@
         </table>
       </div>
     </div>
+  </Loader>
 </template>
 
 <script lang="ts">
-import Boton from '@/components/basic/Boton.vue';
-
-export default {
-  components:{Boton},
+import Boton from '@/components/basic/BotonComponent.vue';
+import Loader from '@/components/LoaderComponent.vue'
+import {defineComponent, type PropType} from 'vue';
+export default defineComponent({
+  components:{Boton, Loader},
   props: {
-    itemsFiltrados: Array,
-    columns: Array
+    itemsFiltrados:{
+      type: Array as PropType<Array<any>>,
+      required: true
+    },
+    columns:{
+      type: Array as PropType<Array<{ key: number | string, label:string }>>,
+      required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    error: {
+      type:String as PropType<string | null>,
+      default:null
+    }
   },
-  // data(){
-  //   return {
-  //     filtro:'',
-  //   }
-  // },
-  // computed:{
-  //   itemsFiltrados() {
-  //     if (!this.filtro) return this.items;
-
-  //     const busqueda = this.filtro.toLowerCase();
-  //     return this.items.filter(item => {
-  //       const valor = item.nombre;
-  //       if (!valor) return false;
-  //       return String(valor).toLowerCase().startsWith(busqueda);
-  //     })
-  //   }
-  // },
   methods: {
-    editar(item: any) {
+    editar(item:{id:number|string}) 
+    {
       this.$emit('edit', item.id)
     },
-    eliminar(item) {
+    eliminar(item:{id:number|string}) {
       this.$emit('delete', item.id)
     }
    }
-}
+})
 </script>

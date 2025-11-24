@@ -1,11 +1,4 @@
-export enum Estado {
-    DISPONIBLE = 'disponible',
-    MANTENIMIENTO = 'mantenimiento',
-}
-export enum Cambio {
-    MANUAL = 'manual',
-    AUTOMATICO = 'automático',
-}
+import type { Estado, Cambio } from '@/types/enums'
 export interface Coche {
     id:number
     marca:{
@@ -32,4 +25,26 @@ export interface Coche {
             fecha_fin: string
         }
     ]
+}
+export interface CreateCoche {
+  marca_id: number
+  carroceria_id: number
+  ano?: number
+  nPlazas: number
+  cambio?: Cambio | null
+  estado?: Estado | null
+  costeDia: number
+  pais_id: number
+}
+
+export interface UpdateCoche {
+    id:number
+    marca_id?: number
+    carroceria_id?: number
+    ano?: number
+    nPlazas?: number
+    cambio?: Cambio | null
+    estado?: Estado | null
+    costeDia?: number
+    pais_id?: number
 }

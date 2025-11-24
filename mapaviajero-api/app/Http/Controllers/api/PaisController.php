@@ -109,8 +109,8 @@ class PaisController extends Controller
         $data = $request->validate([
             'nombre' => 'required|unique:paises,nombre|string|max:255',
             'continente_id' => 'required|exists:continentes,id',
-            'capital' => 'required|string|max:255',
-            'bandera_url' => 'nullable|url',
+            'capital' => 'required|unique:paises,capital|string|max:255',
+            'bandera_url' => 'nullable|unique:paises,bandera_url|url',
             'conduccion' => 'nullable|string|in:izquierda,derecha',
 
             'idiomas' => 'nullable|array',
@@ -128,8 +128,10 @@ class PaisController extends Controller
             'capital.required' => 'Introduce la capital de este país.',
             'capital.string' => 'La capital debe ser una cadena de texto.',
             'capital.max' => 'La capital no puede superar los 255 caracteres.',
+            'capital.unique' => 'Ya existe un país con esa capital.',
 
             'bandera_url.url' => 'La URL de la bandera no tiene un formato válido.',
+            'bandera_url.unique' => 'Ya existe un país con esa bandera.',
 
             'conduccion.in' => 'El campo conducción debe ser "izquierda" o "derecha".',
 
@@ -261,8 +263,8 @@ class PaisController extends Controller
         $data = $request->validate([
                 'nombre' => 'sometimes|unique:paises,nombre,'.$pais->id.'|string|max:255',
                 'continente_id' => 'sometimes|exists:continentes,id',
-                'capital' => 'sometimes|string|max:255',
-                'bandera_url' => 'nullable|url',
+                'capital' => 'sometimes|unique:paises,capital|string|max:255',
+                'bandera_url' => 'nullable|unique:paises,bandera_url|url',
                 'conduccion' => 'nullable|string|in:izquierda,derecha',
 
                 'idiomas' => 'nullable|array',
@@ -277,8 +279,10 @@ class PaisController extends Controller
 
                 'capital.string' => 'La capital debe ser una cadena de texto.',
                 'capital.max' => 'La capital no puede superar los 255 caracteres.',
+                'capital.unique' => 'Ya existe un país con esa capital.',
 
                 'bandera_url.url' => 'La URL de la bandera no tiene un formato válido.',
+                'badera_url.unique' => 'Ya existe un país con esa bandera.',
 
                 'conduccion.in' => 'El campo conducción debe ser "izquierda" o "derecha".',
 

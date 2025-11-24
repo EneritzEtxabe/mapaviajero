@@ -38,7 +38,9 @@ export default {
     label: String,
     icon: String,
     title: String,
-    to: String,
+    to:{
+      type:[String, Object] as unknown as()=>string | {name:string, params?:{id:string|number}}
+    },
     href: String,
     customClasses: {
       type: String,

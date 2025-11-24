@@ -32,10 +32,10 @@
 </template>
 
 <script lang="ts">
-// import { mapActions, mapState } from 'pinia';
+import { mapState } from 'pinia';
 import { usePaisesStore } from '@/stores/paisesStore'
 import CardPais from '@/components/users/paises/components/CardPais.vue'
-import Loader from '@/components/Loader.vue'
+import Loader from '@/components/LoaderComponent.vue'
 import { defineComponent } from 'vue'
 import ImagenCabecera from '../userBasic/ImagenCabecera.vue'
 import type {Pais} from '@/types'
@@ -52,7 +52,6 @@ export default defineComponent({
   },
   data() {
     return {
-      paisesStore: usePaisesStore(),
       continentes: [
         {
           id: 1,
@@ -100,10 +99,7 @@ export default defineComponent({
     }
   },
   computed: {
-    // ...mapState(usePaisesStore,['loading', 'error','items'])
-    paises() {
-      return this.paisesStore.items
-    },
+    ...mapState(usePaisesStore,{loading:'loading', error:'error', paises:'items'}),
     paisesPorContinente() {
       const resultado:PaisesPorContinente = {}
       this.continentes.forEach((continente) => {
@@ -118,14 +114,22 @@ export default defineComponent({
     },
   },
   methods: {
-    //     ...mapActions(usePaisesStore,['fetchAll'])
+    getPaises(){
+      usePaisesStore().fetchAll()
+    },
+    resetPaises(){
+      usePaisesStore().resetItems()
+    },
     obtenerDescripcionContinente(nombre:string) {
       const continente = this.continentes.find((c) => c.nombre === nombre)
       return continente ? continente.descripcion : ''
     },
   },
-  created() {
-    this.paisesStore.fetchAll()
+  mounted() {
+    this.getPaises()
+  },
+  beforeUnmount() {
+    this.resetPaises()
   },
 })
 </script>

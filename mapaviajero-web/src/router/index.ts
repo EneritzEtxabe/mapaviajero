@@ -180,6 +180,7 @@ router.beforeEach(async (to, from, next) => {
         await loginStore.fetchUser();
       }catch(err){
         const error = err as AxiosError<{message:string}>;
+        console.log(error)
         loginStore.token = null;
         loginStore.user=null;
         return next({name:'login'})

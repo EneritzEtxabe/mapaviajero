@@ -83,7 +83,7 @@ class CocheController extends Controller
             'ano' => 'nullable|integer|digits:4',
             'nPlazas' => 'required|integer|in:2,4,5,7',
             'cambio' => 'nullable|in:manual,automático',
-            'estado' => 'nullable|in:disponible,mantenimiento',
+            'estado' => 'sometimes|in:disponible,mantenimiento',
             'costeDia' => 'required|numeric|between:0,99.99',
             'pais_id' => 'required|exists:paises,id',
         ],

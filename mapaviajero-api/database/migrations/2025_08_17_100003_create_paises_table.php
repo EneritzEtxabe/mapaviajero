@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nombre')->unique();
             $table->foreignId('continente_id')->constrained('continentes')->onDelete('cascade');
-            $table->string('capital');
-            $table->string('bandera_url')->nullable();
-            $table->enum('conduccion', ['izquierda', 'derecha'])->unllable();
+            $table->string('capital')->unique();
+            $table->string('bandera_url')->nullable()->unique();
+            $table->enum('conduccion', ['izquierda', 'derecha'])->nullable();
             $table->timestamps();
         });
     }

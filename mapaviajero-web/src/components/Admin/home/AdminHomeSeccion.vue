@@ -12,15 +12,24 @@
     </section>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import AdminHomeCard from "@/components/Admin/home/AdminHomeCard.vue";
 
 export default defineComponent({
     components:{AdminHomeCard},
     props:{
-        titulo:{type:String, required:true},
-        icono:{type:String, default:""},
-        cards:{type:Array, required:true}
+        titulo:{
+          type:String, 
+          required:true
+        },
+        icono:{
+          type:String, 
+          default:""
+        },
+        cards:{
+          type:Array as PropType<Array<{titulo:string, ruta:string}>>, 
+          required:true
+        }
     }
 })
 </script>

@@ -1,12 +1,12 @@
 <template>
-<Loader :loading="loading">
+<Loader :loading="loading" :error="error">
   <div>
     <div class="max-w-xl mx-auto p-4">
       <h2 class="text-xl font-bold mb-4">{{ editMode ? 'Editar lugar' : 'Crear lugar' }}</h2>
       <form @submit.prevent="handleSubmit">
         <!-- Nombre -->
         <div class="mb-4">
-          <label class="block mb-1">Nombre</label>
+          <label class="block mb-1">Nombre*</label>
           <input
             v-model="form.nombre"
             type="text"
@@ -17,7 +17,7 @@
 
         <!-- Pais -->
         <div class="mb-4">
-          <label class="block mb-1">País</label>
+          <label class="block mb-1">País*</label>
           <select v-model="form.pais_id" class="w-full border px-3 py-2 rounded">
             <option disabled value="">Selecciona un país</option>
             <option v-for="p in paises" :key="p.id" :value="p.id">
@@ -112,12 +112,13 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
 import { usePaisesStore } from '@/stores/paisesStore'
 import { useLugaresStore } from '@/stores/lugaresStore'
 import {useTipoLugaresStore} from '@/stores/tipoLugaresStore'
-import Loader from '@/components/Loader.vue'
-import Boton from '@/components/basic/Boton.vue'
+import Loader from '@/components/LoaderComponent.vue'
+import Boton from '@/components/basic/BotonComponent.vue'
 
 export default defineComponent({
   components:{
@@ -132,15 +133,11 @@ export default defineComponent({
   },
   data() {
     return {
-      paisesStore:usePaisesStore(),
-      lugaresStore:useLugaresStore(),
-      tipoLugaresStore:useTipoLugaresStore(),
-      loading:true,
       form: {
         nombre: '',
-        pais_id: '',
+        pais_id: 0,
         descripcion: '',
-        tipoLugares:[],
+        tipoLugares:[] as number[],
         imagen_url: '',
         localizacion_url: '',
         web_url: '',
@@ -148,53 +145,49 @@ export default defineComponent({
     }
   },
   computed: {
-    lugar(){
-      return this.lugaresStore.item
+    ...mapState(useLugaresStore,{loadingLugar:'loading', errorLugar:'error', lugar:'item'}),
+    ...mapState(useTipoLugaresStore,{loadingTipoLugares:'loading', errorTipoLugares:'error', tiposLugar:'items'}),
+    ...mapState(usePaisesStore,{loadingPaises:'loading', errorPaises:'error', paises:'items'}),
+    loading(){
+      return(
+        this.loadingLugar || this.loadingTipoLugares || this.loadingPaises
+      )
     },
-    tiposLugar(){
-      return this.tipoLugaresStore.items
-    },
-    paises(){
-      return this.paisesStore.items 
+    error(){
+      return(
+        this.errorLugar || this.errorTipoLugares || this.errorPaises
+      )
     },
     editMode(){
     return !!this.id
     }
   },
   async created() {
-    this.loading=true;
     if(this.id){
-      await this.lugaresStore.getItem(this.id as number);
+      await useLugaresStore().getItem(this.id as number);
       this.form={
-        nombre:this.lugar.nombre,
-        pais_id:this.lugar.pais['id'],
-        descripcion: this.lugar.descripcion,
-        imagen_url: this.lugar.imagen_url,
-        web_url: this.lugar.web_url,
-        localizacion_url: this.lugar.localizacion_url,
-        tipoLugares: this.lugar.tipo_lugar.map(i=>i.id),
+        nombre:this.lugar?.nombre ?? "",
+        pais_id:this.lugar?.pais['id'] ?? 0,
+        descripcion: this.lugar?.descripcion ?? "",
+        imagen_url: this.lugar?.imagen_url ?? "",
+        web_url: this.lugar?.web_url ?? "",
+        localizacion_url: this.lugar?.localizacion_url ?? "",
+        tipoLugares: this.lugar?.tipo_lugar?.map(i=>i.id) ?? [],
       }
     }
-    await this.tipoLugaresStore.fetchAll();
-    await this.paisesStore.fetchAll();
-    this.loading=false;
+    await useTipoLugaresStore().fetchAll();
+    await usePaisesStore().fetchAll();
   },
   methods: {
     async handleSubmit() {
-      try {
         if (this.editMode) {
-          await this.lugaresStore.updateItem({ id: this.id, ...this.form },false)
+          await useLugaresStore().updateItem({ id: Number(this.id), ...this.form },false)
           alert('Lugar actualizado correctamente')
         } else {
-          await this.lugaresStore.createItem(this.form)
+          await useLugaresStore().createItem(this.form)
           alert('Lugar creado correctamente')
         }
-      } catch (e) {
-        console.error('Error al guardar el lugar:', e)
-        alert('Ha ocurrido un error al guardar')
-      }finally{
         this.$router.push({ name: 'lugaresAdmin' })
-      }
     },
     cancelar() {
       this.$router.push({ name: 'lugaresAdmin' })

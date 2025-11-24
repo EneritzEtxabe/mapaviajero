@@ -72,7 +72,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useUsuariosStore } from '@/stores/usuariosStore'
-import Boton from '../basic/Boton.vue';
+import Boton from '../basic/BotonComponent.vue';
 
     export default defineComponent({
         components:{

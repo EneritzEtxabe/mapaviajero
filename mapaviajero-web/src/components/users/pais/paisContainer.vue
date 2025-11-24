@@ -1,5 +1,6 @@
 <template>
-  <!-- <Loader :loading="loading" :error="error"> -->
+  <Loader :loading="loading" :error="error">
+  <template v-if=pais>
   <Carousel :imagenes="imagenes" alt="Destinos" :titulo="pais.nombre" />
   <div class="max-w-6xl mx-auto p-6">
     <h2 class="text-3xl sm:text-4xl font-bold mt-15 text-center f-color--dark tracking-wide">
@@ -66,47 +67,55 @@
       </div>
     </div>
   </div>
-  <!-- </Loader> -->
+  </template>
+  </Loader>
 </template>
 
 <script lang="ts">
-// import { mapActions, mapState } from 'pinia';
+import { mapState } from 'pinia';
 import { usePaisesStore } from '@/stores/paisesStore'
 import { useLugaresStore } from '@/stores/lugaresStore'
 import { defineComponent } from 'vue'
-import Carousel from '../userBasic/Carousel.vue'
-// import Loader from '@/components/Loader.vue';
+import Carousel from '../userBasic/CarouselCabecera.vue'
+import Loader from '@/components/LoaderComponent.vue';
 
 export default defineComponent({
   components: {
     Carousel,
+    Loader
   },
   props: ['id'],
-  data() {
-    return {
-      paisesStore: usePaisesStore(),
-      lugaresStore: useLugaresStore(),
-    }
-  },
   computed: {
-    // ...mapState(usePaisesStore,['loading', 'error','item'])
-    pais() {
-      return this.paisesStore.item
-    },
+    ...mapState(usePaisesStore,{loading:'loading', error:'error', pais:'item'}),
+    ...mapState(useLugaresStore,{lugares:'items'}),
     lugaresPais() {
-      const res = this.lugaresStore.items
-      return res.filter((lugar) => lugar.pais.id === Number(this.id))
+      return this.lugares.filter((lugar) => lugar.pais.id === Number(this.id))
     },
     imagenes() {
       return this.lugaresPais.map((lugar) => lugar.imagen_url)
     },
   },
-  created() {
-    this.lugaresStore.fetchAll()
-    this.paisesStore.getItem(this.id)
+  methods:{
+    getLugares(){
+      useLugaresStore().fetchAll()
+    },
+    resetLugares(){
+      useLugaresStore().resetItems()
+    },
+    getPais(id:number){
+      usePaisesStore().getItem(id)
+    },
+    resetPais(){
+      usePaisesStore().resetItem()
+    },
+  },
+  mounted(){
+    this.getLugares()
+    this.getPais(Number(this.id))
   },
   beforeUnmount() {
-    this.paisesStore.item = ''
+    this.resetPais()
+    this.resetLugares()
   },
 })
 </script>

@@ -15,26 +15,28 @@
     />
   </div>
   <BaseTable
-    :itemsFiltrados="paisesFiltrados"
+    :itemsFiltrados="datosParaMostrar"
     :columns="columns"
+    :loading="loading"
+    :error="error"
     @edit="editar"
     @delete="eliminar"
   />
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
 import { usePaisesStore } from '@/stores/paisesStore'
 
 import BaseTable from '@/components/Admin/adminBasic/BaseTable.vue'
-import Boton from '@/components/basic/Boton.vue'
-import Buscador from '@/components/basic/Buscador.vue'
+import Boton from '@/components/basic/BotonComponent.vue'
+import Buscador from '@/components/basic/BuscadorComponent.vue'
 
 export default defineComponent({
   components: { BaseTable, Boton, Buscador },
   data() {
     return{
-      paisesStore: usePaisesStore(),
       filtro:'',
       columns: [
         { key: 'nombre', label: 'Nombre' },
@@ -48,9 +50,7 @@ export default defineComponent({
     }
   },
   computed: {
-    paises(){
-      return this.paisesStore.items
-    },
+    ...mapState(usePaisesStore,{loading:'loading', error:'error', paises:'items'}),
     paisesFiltrados() {
       if (!this.filtro){
         return this.paises
@@ -59,18 +59,33 @@ export default defineComponent({
           return pais.nombre.toLowerCase().startsWith(this.filtro.toLowerCase())
         })
       }
-    }
+    },
+    datosParaMostrar(){
+      return this.paisesFiltrados.map(p => ({
+        id:p.id,
+        nombre:p.nombre,
+        capital:p.capital,
+        continente:p.continente.nombre,
+        conduccion:p.conduccion,
+        bandera_url:p.bandera_url,
+        idiomas: p.idiomas,
+        lugares:p.lugares
+      }))
+    },
   },
   created() {
-    this.paisesStore.fetchAll()
+    this.getPaises()
   },
   methods: {
-    editar(id) {
+    getPaises(){
+      usePaisesStore().fetchAll()
+    },
+    editar(id:number) {
       this.$router.push({ name: 'editarPais', params: { id: id } })
     },
     async eliminar(id: number) {
       if (confirm('¿Estás seguro de que deseas eliminar este país?')) {
-        await this.paisesStore.deleteItem(id)
+        await usePaisesStore().deleteItem(id)
       }
     }
   }

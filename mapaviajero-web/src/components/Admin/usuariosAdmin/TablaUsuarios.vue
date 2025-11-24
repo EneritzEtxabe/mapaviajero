@@ -1,32 +1,35 @@
 <template>
   <div class="mx-auto p-6">
-    <ErrorModal :error="error"/>
-    <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">LISTA DE USUARIOS</h2>     
-    <!-- Separador -->
-    <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>  
-    <TablaEditable
-      :items="usuarios"
-      :columns="columns"
-      :mostrarBotonCrear="true"
-      @create="crear"
-      @update="actualizar"
-      @delete="eliminar"
-    />
+    <Loader :loading="loading" :error="error">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">LISTA DE USUARIOS</h2>     
+      <!-- Separador -->
+      <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>  
+      <TablaEditable
+        :items="usuarios"
+        :columns="columns"
+        :mostrarBotonCrear="false"
+        :loading="loading"
+        :error="error"
+        @create="crear"
+        @update="actualizar"
+        @delete="eliminar"
+      />
+    </Loader>
   </div>
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from 'vue'
-import type {Usuario} from '@/types';
+import type {CreateUsuario, UpdateUsuario} from '@/types';
 import { useUsuariosStore } from '@/stores/usuariosStore'
 import TablaEditable from '../adminBasic/TablaEditable.vue';
-import ErrorModal from '@/components/error/ErrorModal.vue';
+import Loader from '@/components/LoaderComponent.vue';
 
 export default defineComponent({
-  components:{TablaEditable, ErrorModal},
+  components:{TablaEditable, Loader},
   data() {
     return{
-      usuariosStore: useUsuariosStore(),
       columns: [
         { key: 'nombre', label: 'Nombre' },
         { key: 'email', label: 'Email' },
@@ -34,41 +37,29 @@ export default defineComponent({
         { key: 'dni', label: 'DNI'},
         { key: 'rol', label: 'Rol' },
       ],
-      error:null
     }
   },
   computed: {
-    usuarios(){
-      return this.usuariosStore.items
-    }
+    ...mapState(useUsuariosStore,{loading:'loading', error:'error', usuarios:'items'}),
   },
   created() {
-    this.usuariosStore.fetchAll()
+    this.getUsuarios()
   },
   methods: {
-    async crear(datos: Usuario) {
-      try {
-        await this.usuariosStore.createItem({ ...datos });
-        alert('Usuario creado correctamente');
-      } catch (err) {
-        this.error = err;
-      }
+    getUsuarios(){
+      useUsuariosStore().fetchAll()
     },
-    async actualizar(datos: Usuario) {
-      try{
-        await this.usuariosStore.updateItem({ ...datos},true)
-        alert('Usuario actualizado correctamente')
-      }catch(err){
-        this.error=err
-      }
+    async crear(datos: CreateUsuario) {
+      await useUsuariosStore().createItem({ ...datos });
+      alert('Usuario creado correctamente');
+    },
+    async actualizar(datos: UpdateUsuario) {
+      await useUsuariosStore().updateItem({ ...datos},true)
+      alert('Usuario actualizado correctamente')
     },
     async eliminar(id: number) {
       if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-        try{
-          await this.usuariosStore.deleteItem(id)
-        }catch(err){
-          this.error=err
-        }
+        await useUsuariosStore().deleteItem(id)
       }
     }
   }

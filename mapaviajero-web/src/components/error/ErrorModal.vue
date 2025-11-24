@@ -1,11 +1,11 @@
 <template>
-  <div v-if="visible && mensaje" class="fixed inset-0 z-50 flex items-center justify-center bg-black/25">
+  <div v-if="visible && error" class="fixed inset-0 z-50 flex items-center justify-center bg-black/25">
     <div class="bg-white w-full max-w-md mx-auto p-6 rounded-lg shadow-lg relative">
       <!-- Título -->
       <h3 class="text-lg font-semibold text-red-600 mb-4">Error</h3>
 
       <!-- Mensaje -->
-      <p class="text-gray-800">{{ mensaje }}</p>
+      <p class="text-gray-800">{{ error }}</p>
 
       <!-- Botón cerrar -->
       <div class="mt-6 text-right">
@@ -32,33 +32,19 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import type { PropType } from 'vue';
 
 export default defineComponent({
   name: 'ErrorModal',
   props: {
     error: {
-      type: Object,
-      default: null
+      type:String as PropType<string |null>,
+      default:null
     }
   },
   data() {
     return {
       visible: true
-    }
-  },
-  computed: {
-    mensaje(): string | null {
-      if (!this.error || !this.visible) return null
-
-      if (this.error.response?.data?.message) {
-        return this.error.response.data.message
-      }
-
-      if (this.error.message) {
-        return this.error.message
-      }
-
-      return 'Ha ocurrido un error inesperado.'
     }
   },
   watch: {
@@ -69,6 +55,7 @@ export default defineComponent({
   methods: {
     cerrar() {
       this.visible = false
+      this.$router.push({name:'admin-panel'})
     }
   }
 })

@@ -95,40 +95,48 @@
 <script lang="ts">
 import BotonCrearNuevo from '@/components/Admin/adminBasic/BotonCrearNuevo.vue'
 import ModalCrearNuevo from './ModalCrearNuevo.vue'
-import Boton from '@/components/basic/Boton.vue'
-export default {
+import Boton from '@/components/basic/BotonComponent.vue'
+import { defineComponent, type PropType } from "vue";
+
+export default defineComponent({
   components: {
     BotonCrearNuevo,
     ModalCrearNuevo,
     Boton,
   },
   props: {
-    items: Array,
-    columns: Array,
+    items:{
+      type: Array as PropType<Array<any>>,
+      required: true
+    },
+    columns:{
+      type: Array as PropType<Array<{ key:string, label:string }>>,
+      required: true,
+    },
     mostrarBotonCrear: Boolean,
   },
   data() {
     return {
-      idEditando: null,
+      idEditando: "",
       datosEditables: {} as Record<string, any>,
       rolesDisponibles: ['admin', 'superadmin', 'cliente'],
     }
   },
   methods: {
-    editar(item: any) {
-      this.idEditando = item.id
+    editar(item:{id:number|string}) {
+      this.idEditando = String(item.id)
       this.datosEditables = { ...item }
-    },
-    cancelar() {
-      this.idEditando = null
-      this.datosEditables = {}
     },
     crearNuevo() {
       this.idEditando = 'nuevo'
-      this.datosEditables = this.columns.reduce((obj, col) => {
+      this.datosEditables = this.columns.reduce<Record<string,string>>((obj, col) => {
         obj[col.key] = ''
         return obj
       }, {})
+    },
+    cancelar() {
+      this.idEditando = ""
+      this.datosEditables = {}
     },
     actualizar() {
       this.$emit('update', this.datosEditables)
@@ -138,9 +146,9 @@ export default {
       this.$emit('create', this.datosEditables)
       this.cancelar()
     },
-    eliminar(item) {
+    eliminar(item:{id:number|string}) {
       this.$emit('delete', item.id)
     },
   },
-}
+})
 </script>

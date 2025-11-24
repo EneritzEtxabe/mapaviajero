@@ -1,30 +1,34 @@
 import { useCrud } from "@/components/Admin/adminBasic/BaseCrud"
 import type { AxiosError } from "axios"
 import { type Store, defineStore } from 'pinia'
-interface CrudState<T> {
-  items: T[]
-  item: T | null
+interface CrudState<TResponse> {
+  items: TResponse[]
+  item: TResponse | null
   loading: boolean
   error: string | null
 }
 
-export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:string){
+export function createCrudStore<
+    TResponse extends {id:number},
+    TCreate extends Partial<TResponse>,
+    TUpdate extends Partial<TResponse> & {id:number}
+>(storeName:string, apiUrl:string){
     const crud = useCrud(apiUrl)
-    function manejarError(this: Store<string, CrudState<T>>, e:unknown) {
+    function manejarError(this: Store<string, CrudState<TResponse>>, e:unknown) {
         const error=e as AxiosError<{message:string}>
         const mensaje = error?.response?.data?.message || error.message || 'Error al cargar los datos'
         this.error = mensaje
         throw e
     }
     return defineStore (storeName, {
-        state: (): CrudState<T> => ({
+        state: (): CrudState<TResponse> => ({
             items: [],
             item: null,
             loading: false,
             error: null,
         }),
         actions: {
-            async fetchAll(this: Store<string, CrudState<T>>) {
+            async fetchAll(this: Store<string, CrudState<TResponse>>) {
                 this.loading = true
                 this.error = null
                 try {
@@ -37,7 +41,7 @@ export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:
                     this.loading = false
                 }
             },
-            async getItem(this: Store<string, CrudState<T>>,id: number) {
+            async getItem(this: Store<string, CrudState<TResponse>>,id: number) {
                 this.loading = true
                 this.error = null
                 try {
@@ -50,10 +54,11 @@ export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:
                     this.loading = false
                 }
             },
-            async createItem(this: Store<string, CrudState<T>>, data: T) {
+            async createItem(this: Store<string, CrudState<TResponse>>, data: TCreate) {
                 this.loading = true
                 this.error = null
                 const idTemporal=Date.now()
+
                 const nuevoItem={...data, id:idTemporal};
                 this.items.push(nuevoItem);
                 try {
@@ -69,11 +74,11 @@ export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:
                     this.loading = false
                 }
             },
-            async updateItem(this: Store<string, CrudState<T>>, data: T, optimista=false) {
+            async updateItem(this: Store<string, CrudState<TResponse>>, data: TUpdate, optimista=false) {
                 this.loading = true
                 this.error = null
                 let index = -1
-                let copiaItem: T | null=null
+                let copiaItem: TResponse | null=null
 
                 if(optimista){
                     index=this.items.findIndex(i=>i.id === data.id)
@@ -104,7 +109,7 @@ export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:
                     this.loading = false
                 }
             },
-            async deleteItem(this: Store<string, CrudState<T>>, id: number) {
+            async deleteItem(this: Store<string, CrudState<TResponse>>, id: number) {
                 this.loading = true
                 this.error = null
                 const copiaItems =[...this.items]
@@ -117,6 +122,12 @@ export function createCrudStore<T extends {id:number}>(storeName:string, apiUrl:
                 } finally {
                     this.loading = false
                 }
+            },
+            resetItem(){
+                this.item = null
+            },
+            resetItems(){
+                this.items = []
             }
         }
     })

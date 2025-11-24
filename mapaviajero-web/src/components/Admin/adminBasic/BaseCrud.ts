@@ -1,6 +1,10 @@
 import api from "@/axios/axios"
 
-export function useCrud(apiUrl: string) {
+export function useCrud<
+  TResponse extends {id:number},
+  TCreate extends Partial<TResponse>,
+  TUpdate extends Partial<TResponse> & {id:number}
+>(apiUrl: string) {
   return {
     async fetchAll() {
       try{
@@ -12,7 +16,7 @@ export function useCrud(apiUrl: string) {
       }
     },
 
-    async createItem(item: any) {
+    async createItem(item:TCreate) {
       try{
         const res = await api.post(apiUrl, item)
         return res
@@ -32,7 +36,7 @@ export function useCrud(apiUrl: string) {
       }
     },
 
-    async updateItem(item: any) {
+    async updateItem(item:TUpdate) {
       try{
         const res = await api.put(`${apiUrl}/${item.id}`, item)
         return res

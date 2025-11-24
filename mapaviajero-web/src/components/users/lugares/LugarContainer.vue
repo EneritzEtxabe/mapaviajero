@@ -1,4 +1,6 @@
 <template>
+    <Loader :loading="loading" :error="error">
+    <template v-if=lugar>
     <ImagenCabecera
         :imagen="lugar.imagen_url"
         alt="Imagen del lugar"
@@ -11,7 +13,7 @@
         <div class="flex flex-col md:flex-row items-center md:items-center gap-2">
             <div class="w-full md:w-1/3 flex flex-col items-center md:items-center">
                 <div class="relative rounded-lg overflow-hidden shadow-lg group h-50">
-                    <a :href="lugar.web_url" target="_blanck">
+                    <a :href="lugar.web_url" target="_blank">
                         <img
                             src="https://cdn-icons-png.flaticon.com/512/5082/5082281.png"
                             alt="Enlace a la web del lugar"
@@ -62,33 +64,43 @@
             ></iframe>
         </div>
     </div>
+    </template>
+</Loader>
 </template>
 <script lang="ts">
+import { mapState } from 'pinia';
 import { defineComponent } from "vue";
 import { useLugaresStore } from '@/stores/lugaresStore'
 import ImagenCabecera from "../userBasic/ImagenCabecera.vue";
+import Loader from '@/components/LoaderComponent.vue';
 export default defineComponent({
     components:{
-        ImagenCabecera
+        ImagenCabecera,
+        Loader
     },
     props:{
-        id:Number,
-    },
-    data() {
-        return{
-            lugaresStore:useLugaresStore(),
+        id: {
+            type:
+                [String, Number],
+                required: true
         }
     },
     computed:{
-        lugar(){
-            return this.lugaresStore.item
-        },
+        ...mapState(useLugaresStore,{loading:'loading', error:'error', lugar:'item'}),
     },
-    created(){
-        this.lugaresStore.getItem(this.id)
+    methods:{
+        getLugar(id:number){
+            useLugaresStore().getItem(id)
+        },
+        resetLugar(){
+            useLugaresStore().resetItem()
+        }
+    },
+    mounted(){
+        this.getLugar(Number(this.id))
     },
     beforeUnmount() {
-        this.lugaresStore.item=""
-    },
+        this.resetLugar()
+    }
 })
 </script>

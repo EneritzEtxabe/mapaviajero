@@ -70,16 +70,24 @@
     </div>
 </template>
 <script lang="ts">
-import Boton from "@/components/basic/Boton.vue";
-import { defineComponent } from "vue";
+import Boton from "@/components/basic/BotonComponent.vue";
+import { defineComponent, type PropType } from "vue";
 
 export default defineComponent({
     components:{Boton},
     props:{
-        columns:Array, 
-        datosEditables: Array, 
-        rolesDisponibles: Array   
-    }
-
+        columns:{
+          type: Array as PropType<Array<{ key:string, label:string }>>,
+          required: true
+        },
+        datosEditables:{
+          type: Object as PropType<{[key:string]:any}>,
+          required: true
+        },
+        rolesDisponibles:{
+          type: Array as PropType<string[]>,
+          required: true
+        }
+    },
 })
 </script>

@@ -1,12 +1,12 @@
 <template>
-<Loader :loading="loading">
+<Loader :loading="loading" :error="error">
   <div>
     <div class="max-w-xl mx-auto p-4">
       <h2 class="text-xl font-bold mb-4">{{ editMode ? 'Editar país' : 'Crear país' }}</h2>
       <form @submit.prevent="handleSubmit">
         <!-- Nombre -->
         <div class="mb-4">
-          <label class="block mb-1">Nombre</label>
+          <label class="block mb-1">Nombre*</label>
           <input
             v-model="form.nombre"
             type="text"
@@ -16,7 +16,7 @@
         </div>
         <!-- Capital -->
         <div class="mb-4">
-          <label class="block mb-1">Capital</label>
+          <label class="block mb-1">Capital*</label>
           <input
             v-model="form.capital"
             type="text"
@@ -38,7 +38,7 @@
 
         <!-- Continente -->
         <div class="mb-4">
-          <label class="block mb-1">Continente</label>
+          <label class="block mb-1">Continente*</label>
           <select v-model="form.continente_id" class="w-full border px-3 py-2 rounded">
             <option disabled value="">Selecciona un continente</option>
             <option v-for="c in continentes" :key="c.id" :value="c.id">
@@ -126,13 +126,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { mapState } from 'pinia';
+import { defineComponent} from 'vue'
 import { usePaisesStore } from '@/stores/paisesStore'
 import { useIdiomasStore } from '@/stores/idiomasStore'
 import { useLugaresStore } from '@/stores/lugaresStore'
-import Loader from '@/components/Loader.vue'
-import Boton from '@/components/basic/Boton.vue'
-// import LugarContainer from '@/components/users/lugares/LugarContainer.vue'
+import Loader from '@/components/LoaderComponent.vue'
+import Boton from '@/components/basic/BotonComponent.vue'
+import type {FormPais,Conduccion, CreatePais, UpdatePais} from '@/types'
 
 export default defineComponent({
   components:{
@@ -147,10 +148,7 @@ export default defineComponent({
   },
   data() {
     return {
-      paisesStore:usePaisesStore(),
-      idiomasStore:useIdiomasStore(),
-      lugaresStore:useLugaresStore(),
-      loading:true,
+      lugaresEliminados:[] as number[],
       continentes: [
         { id: 1, nombre: 'Asia' },
         { id: 2, nombre: 'África' },
@@ -163,81 +161,84 @@ export default defineComponent({
       form: {
         nombre: '',
         capital: '',
-        continente_id: '',
-        conduccion: '',
+        continente_id: 0,
+        conduccion: null as Conduccion | null,
         bandera_url: '',
         idiomas: [],
-        lugares:[],
-      },
+      }as FormPais,
     }
   },
   computed: {
-    pais(){
-      return this.paisesStore.item
+    ...mapState(usePaisesStore,{loadingPais:'loading', errorPais:'error', pais:'item'}),
+    ...mapState(useIdiomasStore,{loadingIdiomas:'loading', errorIdiomas:'error', idiomas:'items'}),
+    loading(){
+      return(
+        this.loadingPais || this.loadingIdiomas
+      )
     },
-    idiomas(){
-      return this.idiomasStore.items
+    error(){
+      return(
+        this.errorPais || this.errorIdiomas
+      )
     },
     editMode(){
     return !!this.id
     }
   },
   async created() {
-    this.loading=true;
     if(this.id){
-      await this.paisesStore.getItem(this.id as number);
+      await usePaisesStore().getItem(this.id as number);
       this.form={
-        nombre:this.pais.nombre,
-        capital:this.pais.capital,
-        continente_id: this.pais.continente['id'],
-        conduccion: this.pais.conduccion,
-        bandera_url: this.pais.bandera_url,
-        idiomas:this.pais.idiomas.map(i=>i.id),
-        lugares:this.pais.lugares,
+        nombre:this.pais?.nombre ?? "",
+        capital:this.pais?.capital ?? "",
+        continente_id: this.pais?.continente['id'] ?? "",
+        conduccion: this.pais?.conduccion || null,
+        bandera_url: this.pais?.bandera_url ?? "",
+        idiomas:this.pais?.idiomas?.map(i => i.id) ?? [],
+        lugares:this.pais?.lugares?.map(i => ({ id:i.id, nombre:i.nombre })) ?? []
       }
     }
-    await this.idiomasStore.fetchAll();
-    this.loading=false;
+    await useIdiomasStore().fetchAll();
   },
   methods: {
     async handleSubmit() {
-      try {
-        if (this.editMode) {
-          await this.paisesStore.updateItem({ id: this.id, ...this.form },false)
-          if (this.lugaresEliminados?.length) {
-            for (const id of this.lugaresEliminados) {
-              if (confirm('¿Estás seguro de que deseas eliminar esos lugares permanentemente de tu Base de Datos?')) {
-                try{
-                   await this.lugaresStore.deleteItem(id);
-                }catch(err){
-                  this.error=err
-                }
-              }
+      if (this.editMode) {
+        await usePaisesStore().updateItem({id: Number(this.id), ...this.form } as UpdatePais,false)
+        if (this.lugaresEliminados?.length) {
+          for (const id of this.lugaresEliminados) {
+            if (confirm('¿Estás seguro de que deseas eliminar esos lugares permanentemente de tu Base de Datos?')) {
+              await useLugaresStore().deleteItem(id);
             }
-            this.lugaresEliminados = [];
           }
-          alert('País actualizado correctamente')
-        } else {
-          await this.paisesStore.createItem(this.form)
-          alert('País creado correctamente')
+          this.lugaresEliminados = [];
         }
-        // this.$emit('success') // Notificar al componente padre (si se usa)
-      } catch (e) {
-        console.error('Error al guardar el país:', e)
-        alert('Ha ocurrido un error al guardar')
-      }finally{
-        this.$router.push({ name: 'paisesAdmin' })
+        alert('País actualizado correctamente')
+      } else {
+        await usePaisesStore().createItem(
+          {
+            nombre: this.form.nombre,
+            capital: this.form.capital,
+            bandera_url: this.form.bandera_url,
+            continente_id: this.form.continente_id,
+            conduccion: this.form.conduccion ?? undefined,
+            idiomas: this.form.idiomas
+          }as CreatePais
+        )
+        alert('País creado correctamente')
       }
+      this.$router.push({ name: 'paisesAdmin' })
     },
     cancelar() {
       this.$router.push({ name: 'paisesAdmin' })
     },
     eliminarLugar(id:number){
-      this.form.lugares = this.form.lugares.filter(lugar =>lugar.id!== id)
-      if (!this.lugaresEliminados) {
-        this.lugaresEliminados = [];
+      if(this.form.lugares){
+        this.form.lugares = this.form.lugares.filter(lugar =>lugar.id!== id)
+        if (!this.lugaresEliminados) {
+          this.lugaresEliminados = [];
+        }
+        this.lugaresEliminados.push(id);
       }
-      this.lugaresEliminados.push(id);
     }
   },
 })

@@ -1,5 +1,5 @@
 <template>
-  <!-- <Loader :loading="loading" :error="error"> -->
+  <Loader :loading="loading" :error="error">
   <ImagenCabecera
     imagen="https://www.race.es/revista-autoclub/wp-content/uploads/sites/4/2021/07/alquila-coche-con-la-garantia-del-race-759x500.jpg"
     alt="Coche en un mirador"
@@ -15,37 +15,45 @@
     >
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-5">
       <CocheDetail
-        v-for="coche in items"
+        v-for="coche in coches"
         :coche="coche"
         :key="coche.id"
         class="min-w-[240px] mx-auto"
       />
     </div>
   </div>
-  <!-- </Loader> -->
+  </Loader>
 </template>
 
 <script lang="ts">
-import { mapActions, mapState } from 'pinia'
+import { mapState } from 'pinia'
 import { useCochesStore } from '@/stores/cochesStore'
 import CocheDetail from '@/components/users/coches/components/CocheDetail.vue'
 import ImagenCabecera from '../userBasic/ImagenCabecera.vue'
+import Loader from '@/components/LoaderComponent.vue';
 
 export default {
   components: {
     ImagenCabecera,
     CocheDetail,
-    // Loader
+    Loader
   },
   computed: {
-    ...mapState(useCochesStore, ['loading', 'error', 'items']),
+    ...mapState(useCochesStore, {loading:'loading', error:'error', coches:'items'}),
   },
   methods: {
-    // Tengo accesible el método de fetch del estado
-    ...mapActions(useCochesStore, ['fetchAll']),
+    getCoches(){
+      useCochesStore().fetchAll()
+    },
+    resetCoches(){
+      useCochesStore().resetItems()
+    }
   },
-  created() {
-    this.fetchAll()
+  mounted() {
+    this.getCoches()
+  },
+  beforeUnmount() {
+    this.resetCoches()
   },
 }
 </script>

@@ -20,22 +20,30 @@
         v-for="grupo in direcciones"
         :key="grupo.bloque"
         :grupo="grupo"
-        @click="$emit('toggleIsVisible')"
+        @toggleIsVisible="$emit('toggleIsVisible')"
       />
       <a href="#" @click.prevent="$emit('logout')" class="hover:underline px-3 py-2 rounded text-sm">Logout</a>
     </nav>
   </aside>
 </template>
 <script lang="ts">
-import Boton from '@/components/basic/Boton.vue';
-import { defineComponent } from 'vue'
+import Boton from '@/components/basic/BotonComponent.vue';
+import { defineComponent, type PropType } from 'vue'
 import AdminNavbar from './AdminNavbar.vue';
+
+type itemsDirecciones={
+  label:string, 
+  ruta:string
+}
 
 export default defineComponent({
     components:{Boton, AdminNavbar},
     props:{
-        direcciones:{type:Array, required:true},
+        direcciones:{
+          type:Array as PropType<Array<{ bloque: string, items:itemsDirecciones[]}>>,
+          required:true},
         isVisible:{type:Boolean, required:true}
     },
+    emits:['toggleIsVisible','logout']
 })
 </script>

@@ -25,7 +25,8 @@ import ModalRegistro from './ModalRegistro.vue';
 
 export default defineComponent({
   components:{
-    LoginForm,ModalRegistro
+    LoginForm,
+    ModalRegistro
   },
   data() {
     return{

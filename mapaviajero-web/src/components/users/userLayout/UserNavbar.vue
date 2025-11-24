@@ -18,7 +18,7 @@
           />
         </li>
         <li v-if="!isAuthenticated">
-          <router-link :to="{name:'login'}" class="text-md inline-flex items-center justify-center h-9 px-3 pl-20 hover:underline" @click="loginStore.error=null">Login</router-link>
+          <router-link :to="{name:'login'}" class="text-md inline-flex items-center justify-center h-9 px-3 pl-20 hover:underline" @click=clearError>Login</router-link>
         </li>
         <li v-if="isAuthenticated">
           <a href="#" @click.prevent="logout" class="text-md inline-flex items-center justify-center h-9 px-3 pl-20 hover:underline">Logout</a>
@@ -78,40 +78,35 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import { useLoginStore } from '@/stores/loginStore';
-import Boton from '@/components/basic/Boton.vue';
+import Boton from '@/components/basic/BotonComponent.vue';
 export default{
+   components:{
+      Boton
+    },
     data(){
         return {
             isVisible:false,
-
         };
     },
     computed:{
-      // Obtener el store
-      loginStore() {
-        return useLoginStore();
-      },
-      // Usar el getter isAuthenticated del store
+      ...mapState(useLoginStore, {loading:'loading', error:'error', user:'user'}),
       isAuthenticated() {
-        return this.loginStore.isAuthenticated;
-      },
-      // Por ejemplo, si quieres el usuario
-      user() {
-        return this.loginStore.user;
+        return useLoginStore().isAuthenticated;
       },
     },
     methods:{
         toggleIsVisible(){
             this.isVisible=!this.isVisible
         },
+        clearError() {
+          useLoginStore().error = null;
+        },
         logout() {
-          this.loginStore.logout();
+          useLoginStore().logout();
         },
     },
-    components:{
-      Boton
-    }
 }
 </script>
 

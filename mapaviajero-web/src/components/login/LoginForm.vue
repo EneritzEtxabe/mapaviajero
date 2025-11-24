@@ -1,23 +1,23 @@
 <template>
     <form class="space-y-6" @submit.prevent="login">
       <div>
-        <label class="block mb-1 text-gray-700 font-medium">Email:</label>
+        <label class="block mb-1 text-gray-700 font-medium">Email*:</label>
         <input
           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
           type="email"
           v-model="email"
-          @input="loginStore.error=null"
+          @input=clearError
           required
         />
       </div>
 
       <div>
-        <label class="block mb-1 text-gray-700 font-medium">Contraseña:</label>
+        <label class="block mb-1 text-gray-700 font-medium">Contraseña*:</label>
         <input
           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
           type="password"
           v-model="password"
-          @input="loginStore.error=null"
+          @input=clearError
           required
         />
       </div>
@@ -43,8 +43,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from 'pinia'
 import { useLoginStore } from '@/stores/loginStore'
-import Boton from '../basic/Boton.vue'
+import Boton from '../basic/BotonComponent.vue'
 
 export default defineComponent({
   components: { Boton },
@@ -54,27 +55,23 @@ export default defineComponent({
       password: '',
     }
   },
-
   computed: {
-    loginStore() {
-      return useLoginStore()
-    },
-    error() {
-      return this.loginStore.error
-    },
+    ...mapState(useLoginStore, {loading:'loading', error:'error', user:'user'}),
   },
 
   methods: {
     async login() {
-      await this.loginStore.login(this.email, this.password)
-      const user = this.loginStore.user
+      await useLoginStore().login(this.email, this.password)
       if(this.error == null){
-        if (user?.rol === 'admin' || user?.rol === 'superadmin') {
+        if (this.user?.rol === 'admin' || this.user?.rol === 'superadmin') {
           this.$router.push({ name: 'admin-panel' })
         } else {
           this.$router.push({ name: 'home' })
         }
       }
+    },
+    clearError() {
+      useLoginStore().error = null;
     },
   },
 })
