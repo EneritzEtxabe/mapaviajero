@@ -82,7 +82,7 @@
       </tbody>
     </table>
     <ModalCrearNuevo
-      v-if="idEditando === 'nuevo'"
+      v-if="idEditando === 0"
       :columns="columns"
       :datosEditables="datosEditables"
       :rolesDisponibles="rolesDisponibles"
@@ -117,25 +117,25 @@ export default defineComponent({
   },
   data() {
     return {
-      idEditando: "",
+      idEditando: null as number | null,
       datosEditables: {} as Record<string, any>,
       rolesDisponibles: ['admin', 'superadmin', 'cliente'],
     }
   },
   methods: {
-    editar(item:{id:number|string}) {
-      this.idEditando = String(item.id)
+    editar(item:{id:number}) {
+      this.idEditando = item.id
       this.datosEditables = { ...item }
     },
     crearNuevo() {
-      this.idEditando = 'nuevo'
+      this.idEditando = 0
       this.datosEditables = this.columns.reduce<Record<string,string>>((obj, col) => {
         obj[col.key] = ''
         return obj
       }, {})
     },
     cancelar() {
-      this.idEditando = ""
+      this.idEditando = null
       this.datosEditables = {}
     },
     actualizar() {

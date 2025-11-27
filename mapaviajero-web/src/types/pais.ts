@@ -14,32 +14,28 @@ export interface Pais {
 }
 
 export interface CreatePais {
-  nombre: string;
-  capital: string;
-  bandera_url?: string;
-  continente_id: number | "";
-  conduccion?: Conduccion;
+  nombre: string | null;
+  capital: string | null;
+  bandera_url?: string | null;
+  continente_id: number | null;
+  conduccion?: Conduccion | null;
   idiomas: number[];
 }
 
 export interface UpdatePais {
     id:number;
-    nombre?: string;
-    capital?: string;
-    bandera_url?: string;
-    continente_id?: number | "";
-    conduccion?: Conduccion;
+    nombre?: string | null;
+    capital?: string | null;
+    bandera_url?: string | null;
+    continente_id?: number | null;
+    conduccion?: Conduccion | null;
     idiomas?: number[];
-    lugares?:{
-        id:number;
-        nombre:string
-    }[];
 }
 export interface FormPais{
-    nombre?: string;
-    capital?: string;
-    bandera_url?: string;
-    continente_id?: number | "";
+    nombre?: string | null;
+    capital?: string | null;
+    bandera_url?: string | null;
+    continente_id?: number | null;
     conduccion?: Conduccion | null;
     idiomas?: number[];
     lugares?:{

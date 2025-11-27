@@ -27,24 +27,24 @@ export interface Coche {
     ]
 }
 export interface CreateCoche {
-  marca_id: number
-  carroceria_id: number
-  ano?: number
-  nPlazas: number
+  marca_id: number | null
+  carroceria_id: number | null
+  ano?: number | null
+  nPlazas: number | null
   cambio?: Cambio | null
   estado?: Estado | null
-  costeDia: number
-  pais_id: number
+  costeDia: number | null
+  pais_id: number | null
 }
 
 export interface UpdateCoche {
     id:number
-    marca_id?: number
-    carroceria_id?: number
-    ano?: number
-    nPlazas?: number
+    marca_id?: number | null
+    carroceria_id?: number |null
+    ano?: number | null
+    nPlazas?: number |null
     cambio?: Cambio | null
     estado?: Estado | null
-    costeDia?: number
-    pais_id?: number
+    costeDia?: number | null
+    pais_id?: number | null
 }
