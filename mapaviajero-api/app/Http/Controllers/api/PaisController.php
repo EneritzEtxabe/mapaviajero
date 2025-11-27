@@ -263,8 +263,8 @@ class PaisController extends Controller
         $data = $request->validate([
                 'nombre' => 'sometimes|unique:paises,nombre,'.$pais->id.'|string|max:255',
                 'continente_id' => 'sometimes|exists:continentes,id',
-                'capital' => 'sometimes|unique:paises,capital|string|max:255',
-                'bandera_url' => 'nullable|unique:paises,bandera_url|url',
+                'capital' => 'sometimes|unique:paises,capital,'.$pais->id.'|string|max:255',
+                'bandera_url' => 'nullable|unique:paises,bandera_url,'.$pais->id.'|url',
                 'conduccion' => 'nullable|string|in:izquierda,derecha',
 
                 'idiomas' => 'nullable|array',

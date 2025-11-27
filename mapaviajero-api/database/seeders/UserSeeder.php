@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
             'telefono' =>'685468258',
             'dni'=>'78884921A',
             'rol' => 'superadmin',
-            'password' => Hash::make('1234'),
+            'password' => Hash::make('12345678'),
         ]);
         User::create([
             'nombre' => 'Admin',
@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
             'telefono' =>'684452258',
             'dni'=>'75824921A',
             'rol' => 'admin',
-            'password' => Hash::make('1234'),
+            'password' => Hash::make('12345678'),
         ]);
         User::create([
             'nombre' => 'Cliente1',
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             'telefono' =>'684585769',
             'dni'=>'74587521R',
             'rol' => 'cliente',
-            'password' => Hash::make('1234'),
+            'password' => Hash::make('12345678'),
         ]);
         User::create([
             'nombre' => 'Cliente2',
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
             'telefono' =>'688587769',
             'dni'=>'74588821R',
             'rol' => 'cliente',
-            'password' => Hash::make('1234'),
+            'password' => Hash::make('12345678'),
         ]);
         User::create([
             'nombre' => 'Cliente3',
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
             'telefono' =>'677585769',
             'dni'=>'88587521R',
             'rol' => 'cliente',
-            'password' => Hash::make('1234'),
+            'password' => Hash::make('12345678'),
         ]);
     }
 }
