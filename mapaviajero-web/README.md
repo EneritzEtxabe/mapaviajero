@@ -74,3 +74,11 @@ src/
 | / admin/idiomas         | TabalIdiomas    | SÍ   |
 
 ...
+
+## Usuarios en BBDD (para hacer pruebas en front)
+
+| Email               | Contraseña | Rol        |
+| ------------------- | ---------- | ---------- |
+| admin@ebis.com      | 12345678   | admin      |
+| auperadmin@ebis.com | 12345678   | superadmin |
+| cliente1@ebis.com   | 12345678   | cliente    |
