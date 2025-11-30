@@ -59,7 +59,7 @@ class MarcaCocheController extends Controller
      *         @OA\JsonContent(ref="#/components/schemas/MarcaCocheDB")
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="Marca de coche creada correctamente",
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
@@ -98,7 +98,7 @@ class MarcaCocheController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $resultado
-        ], 200);
+        ], 201);
     }
 
     /**

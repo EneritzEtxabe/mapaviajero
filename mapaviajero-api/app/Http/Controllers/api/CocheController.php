@@ -57,7 +57,7 @@ class CocheController extends Controller
      *         @OA\JsonContent(ref="#/components/schemas/CocheDB")
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="Coche creado correctamente",
      *         @OA\JsonContent(ref="#/components/schemas/Coche")
      *     ),
@@ -120,7 +120,7 @@ class CocheController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $resultado
-        ], 200);
+        ], 201);
     }
 
     /**

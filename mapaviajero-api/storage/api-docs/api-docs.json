@@ -517,6 +517,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No autorizado. El token no fue proporcionado o no es válido"
                     }
                 },
                 "security": [
@@ -561,6 +564,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No autorizado. El token no fue proporcionado o no es válido"
                     },
                     "403": {
                         "description": "Acceso denegado. Solo administradores pueden crear carrocerías.",
@@ -635,6 +641,9 @@
                     }
                 ],
                 "responses": {
+                    "401": {
+                        "description": "No autorizado. El token no fue proporcionado o no es válido"
+                    },
                     "200": {
                         "description": "Carrocería encontrada",
                         "content": {
@@ -726,6 +735,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "No autorizado. El token no fue proporcionado o no es válido"
+                    },
                     "403": {
                         "description": "Sin permisos para actualizar",
                         "content": {
@@ -816,6 +828,9 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No autorizado. El token no fue proporcionado o no es válido"
                     },
                     "403": {
                         "description": "Sin permisos para borrar",
@@ -917,7 +932,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Coche creado correctamente",
                         "content": {
                             "application/json": {
@@ -2027,7 +2042,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Marca de coche creada correctamente",
                         "content": {
                             "application/json": {

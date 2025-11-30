@@ -257,8 +257,10 @@ class UserController extends Controller
             return response()->json(['message'=>'Usuario no encontrado'], 404);
         }
 
+        $data = $request->validated();
+        
         if(Gate::denies('es-superadmin')){
-            $request->request->remove('rol'); 
+            unset($data['rol']); 
         }
 
         switch ($usuario->rol){
@@ -278,8 +280,6 @@ class UserController extends Controller
                 }
                 break;
         }
-    
-        $data = $request->validated();
     
         if (isset($data['password'])){
             $data['password'] = Hash::make($data['password']);

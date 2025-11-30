@@ -88,7 +88,7 @@ class IdiomaController extends Controller
                 'iso_639_1'=> 'nullable|unique:idiomas,iso_639_1|size:2',
             ],
             [
-                'nombre.require' => 'Introduce un nombre de idioma',
+                'nombre.required' => 'Introduce un nombre de idioma',
                 'nombre.string' => 'El nombre del idioma debe ser una cadena de texto.',
                 'nombre.unique' => 'Ya existe un idioma con ese nombre en nuestra BBDD.',
                 'nombre.min' => 'El nombre del idioma debe tener al menos 3 caracteres.',

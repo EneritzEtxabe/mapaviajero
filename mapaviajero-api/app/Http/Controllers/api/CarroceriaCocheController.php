@@ -30,6 +30,10 @@ class CarroceriaCocheController extends Controller
      *                 @OA\Items(ref="#/components/schemas/CarroceriaCoche")
      *             )
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado. El token no fue proporcionado o no es válido"
      *     )
      * )
      */
@@ -63,6 +67,10 @@ class CarroceriaCocheController extends Controller
      *             @OA\Property(property="data", ref="#/components/schemas/CarroceriaCoche")
      *         )
      *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado. El token no fue proporcionado o no es válido"
+     *     ),   
      *     @OA\Response(
      *         response=403,
      *         description="Acceso denegado. Solo administradores pueden crear carrocerías.",
@@ -128,6 +136,10 @@ class CarroceriaCocheController extends Controller
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado. El token no fue proporcionado o no es válido"
+     *     ),
+     *     @OA\Response(
      *         response=200,
      *         description="Carrocería encontrada",
      *         @OA\JsonContent(
@@ -182,6 +194,10 @@ class CarroceriaCocheController extends Controller
      *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="data", ref="#/components/schemas/CarroceriaCoche")
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado. El token no fue proporcionado o no es válido"
      *     ),
      *     @OA\Response(
      *         response=403,
@@ -255,6 +271,10 @@ class CarroceriaCocheController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="Carrocería borrada correctamente")
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado. El token no fue proporcionado o no es válido"
      *     ),
      *     @OA\Response(
      *         response=403,
