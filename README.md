@@ -15,4 +15,4 @@ Por otra parte, está el panel de control de los administradores de la aplicaci�
 ![alt text](./docs/TablaLugares.png)
 ![alt text](./docs/FormEdicion.png)
 
-Dentro de las carpetas mapaviajero-api y mapaviajero-web se encuentran otros archivos README con más información sobre cada parte del proyecto, las indicaciones de isntalación, despliegue y comprensión.
+Dentro de las carpetas mapaviajero-api y mapaviajero-web se encuentran otros archivos README con más información sobre cada parte del proyecto, las indicaciones de instalación, despliegue y comprensión.
