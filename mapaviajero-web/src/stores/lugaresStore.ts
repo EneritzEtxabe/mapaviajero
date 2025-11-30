@@ -3,6 +3,5 @@ import type { Lugar, CreateLugar, UpdateLugar } from '@/types'
 
 export const useLugaresStore = createCrudStore<Lugar, CreateLugar, UpdateLugar>(
   'lugares',
-  'http://localhost:8000/api/lugares'
+  'http://localhost:8000/api/lugares',
 )
-  

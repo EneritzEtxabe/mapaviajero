@@ -2,9 +2,5 @@
   <RouterView />
 </template>
 
-<script lang="ts">
-
-</script>
-<style scoped>
-
-</style>
+<script lang="ts"></script>
+<style scoped></style>

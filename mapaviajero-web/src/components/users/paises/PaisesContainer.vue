@@ -32,13 +32,13 @@
 </template>
 
 <script lang="ts">
-import { mapState } from 'pinia';
+import { mapState } from 'pinia'
 import { usePaisesStore } from '@/stores/paisesStore'
 import CardPais from '@/components/users/paises/components/CardPais.vue'
 import Loader from '@/components/LoaderComponent.vue'
 import { defineComponent } from 'vue'
 import ImagenCabecera from '../userBasic/ImagenCabecera.vue'
-import type {Pais} from '@/types'
+import type { Pais } from '@/types'
 
 interface PaisesPorContinente {
   [continenteNombre: string]: Pais[]
@@ -99,9 +99,9 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(usePaisesStore,{loading:'loading', error:'error', paises:'items'}),
+    ...mapState(usePaisesStore, { loading: 'loading', error: 'error', paises: 'items' }),
     paisesPorContinente() {
-      const resultado:PaisesPorContinente = {}
+      const resultado: PaisesPorContinente = {}
       this.continentes.forEach((continente) => {
         const paisesDelContinente = this.paises.filter(
           (pais) => pais.continente && pais.continente.id === continente.id,
@@ -114,13 +114,13 @@ export default defineComponent({
     },
   },
   methods: {
-    getPaises(){
+    getPaises() {
       usePaisesStore().fetchAll()
     },
-    resetPaises(){
+    resetPaises() {
       usePaisesStore().resetItems()
     },
-    obtenerDescripcionContinente(nombre:string) {
+    obtenerDescripcionContinente(nombre: string) {
       const continente = this.continentes.find((c) => c.nombre === nombre)
       return continente ? continente.descripcion : ''
     },
@@ -135,11 +135,11 @@ export default defineComponent({
 </script>
 <style>
 .scroll-hide {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .scroll-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none;
 }
 </style>

@@ -1,8 +1,9 @@
 <template>
   <Loader :loading="loading" :error="error">
-    <!-- Destinos destacados -->
     <section class="max-w-6xl mx-auto py-16 px-6">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide mb-5">DESTINOS DESTACADOS</h2>
+      <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide mb-5">
+        DESTINOS DESTACADOS
+      </h2>
       <!-- Separador -->
       <div class="h-px bg--dark mx-auto w-1/4 mb-10"></div>
       <div
@@ -34,7 +35,7 @@
             </p>
           </div>
           <Boton
-            :to="{ name: 'lugar', params: { id:destino.id } }"
+            :to="{ name: 'lugar', params: { id: destino.id } }"
             type="generalDark"
             :label="'Saber más'"
             :icon="'M12 4v16m8-8H4'"
@@ -46,33 +47,33 @@
   </Loader>
 </template>
 <script lang="ts">
-import Boton from "@/components/basic/BotonComponent.vue";
-import { defineComponent } from "vue";
-import { useLugaresStore } from "@/stores/lugaresStore";
-import { mapState } from 'pinia';
-import Loader from '@/components/LoaderComponent.vue';
+import Boton from '@/components/basic/BotonComponent.vue'
+import { defineComponent } from 'vue'
+import { useLugaresStore } from '@/stores/lugaresStore'
+import { mapState } from 'pinia'
+import Loader from '@/components/LoaderComponent.vue'
 
 export default defineComponent({
-    components:{Boton, Loader},
-    computed: {
-      ...mapState(useLugaresStore,{loading:'loading', error:'error', lugares:'items'}),
-      lugaresTop(){
-        return this.lugares.slice(-5).reverse();
-      },
+  components: { Boton, Loader },
+  computed: {
+    ...mapState(useLugaresStore, { loading: 'loading', error: 'error', lugares: 'items' }),
+    lugaresTop() {
+      return this.lugares.slice(-5).reverse()
     },
-    methods:{
-      getLugares(){
-        useLugaresStore().fetchAll()
-      },
-      resetLugares(){
-        useLugaresStore().resetItems()
-      }
+  },
+  methods: {
+    getLugares() {
+      useLugaresStore().fetchAll()
     },
-    created() {
-      this.getLugares()
+    resetLugares() {
+      useLugaresStore().resetItems()
     },
-    beforeUnmount() {
-      this.resetLugares()
-    },
+  },
+  created() {
+    this.getLugares()
+  },
+  beforeUnmount() {
+    this.resetLugares()
+  },
 })
 </script>

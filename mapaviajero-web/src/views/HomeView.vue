@@ -1,6 +1,6 @@
 <template>
   <main class="min-h-screen bg--beige">
-    <Carousel 
+    <Carousel
       :imagenes="imagenes"
       alt="Destinos del momento"
       titulo="World Map"

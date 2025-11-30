@@ -16,9 +16,9 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    props:{
-        grupo:{type:Object, required:true}
-    },
-    emits:['toggleIsVisible']
+  props: {
+    grupo: { type: Object, required: true },
+  },
+  emits: ['toggleIsVisible'],
 })
 </script>

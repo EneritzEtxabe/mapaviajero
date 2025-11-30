@@ -5,9 +5,7 @@
   <!-- Separador -->
   <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>
   <div class="flex justify-between items-center m-4">
-    <Buscador 
-      v-model:filtro="filtro"
-    />
+    <Buscador v-model:filtro="filtro" />
     <Boton
       :to="{ name: 'nuevoLugar' }"
       type="generalDark"
@@ -16,19 +14,19 @@
       label="Añadir Lugar"
     />
   </div>
-  <BaseTable 
-    :itemsFiltrados="datosParaMostrar" 
+  <BaseTable
+    :itemsFiltrados="datosParaMostrar"
     :columns="columns"
     :loading="loading"
     :error="error"
-    @edit="editar" 
-    @delete="eliminar" 
+    @edit="editar"
+    @delete="eliminar"
   >
   </BaseTable>
 </template>
 
 <script lang="ts">
-import { mapState } from 'pinia';
+import { mapState } from 'pinia'
 import { defineComponent } from 'vue'
 import { useLugaresStore } from '@/stores/lugaresStore'
 
@@ -40,7 +38,7 @@ export default defineComponent({
   components: { BaseTable, Boton, Buscador },
   data() {
     return {
-      filtro:'',
+      filtro: '',
       columns: [
         { key: 'nombre', label: 'Nombre' },
         { key: 'continente', label: 'Continente' },
@@ -54,27 +52,27 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(useLugaresStore,{loading:'loading', error:'error', lugares:'items'}),
+    ...mapState(useLugaresStore, { loading: 'loading', error: 'error', lugares: 'items' }),
     lugaresFiltrados() {
-      if (!this.filtro){
+      if (!this.filtro) {
         return this.lugares
-      }else{
-        return this.lugares.filter(lugar => {
+      } else {
+        return this.lugares.filter((lugar) => {
           return lugar.nombre.toLowerCase().startsWith(this.filtro.toLowerCase())
         })
       }
     },
-    datosParaMostrar(){
-      return this.lugaresFiltrados.map(l => ({
-        id:l.id,
+    datosParaMostrar() {
+      return this.lugaresFiltrados.map((l) => ({
+        id: l.id,
         nombre: l.nombre,
-        continente:l.continente.nombre,
+        continente: l.continente.nombre,
         pais: l.pais.nombre,
-        descripcion:l.descripcion,
-        tipo_lugar:l.tipo_lugar,
-        imagen_url:l.imagen_url,
-        web_url:l.web_url,
-        localizacion_url:l.localizacion_url,
+        descripcion: l.descripcion,
+        tipo_lugar: l.tipo_lugar,
+        imagen_url: l.imagen_url,
+        web_url: l.web_url,
+        localizacion_url: l.localizacion_url,
       }))
     },
   },
@@ -82,10 +80,10 @@ export default defineComponent({
     this.getLugares()
   },
   methods: {
-    getLugares(){
+    getLugares() {
       useLugaresStore().fetchAll()
     },
-    editar(id:number) {
+    editar(id: number) {
       this.$router.push({ name: 'editarLugar', params: { id: id } })
     },
     async eliminar(id: number) {

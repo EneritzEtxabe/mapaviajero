@@ -36,35 +36,32 @@ const router = createRouter({
       component: UserLayout,
       children: [
         { path: '', name: 'home', component: HomeView },
-        { path: 'login', 
-          name: 'login', 
-          component: LoginContainer 
+        { path: 'login', name: 'login', component: LoginContainer },
+        {
+          path: 'paises',
+          name: 'paises',
+          component: PaisesContainer,
         },
         {
-          path:"paises",
-          name:'paises',
-          component: PaisesContainer
-        },
-        {
-          path:"paises/:id",
-          name:'pais',
+          path: 'paises/:id',
+          name: 'pais',
           component: PaisContainer,
-          props:true
+          props: true,
         },
         {
-          path:"lugares/:id",
-          name:'lugar',
+          path: 'lugares/:id',
+          name: 'lugar',
           component: LugarContainer,
-          props:true
+          props: true,
         },
         {
-          path:"coches",
-          name:'alquilerCoches',
+          path: 'coches',
+          name: 'alquilerCoches',
           component: CochesContainer,
-          props:true,
-          meta: { requiresAuth: true}
+          props: true,
+          meta: { requiresAuth: true },
         },
-      ]
+      ],
     },
     {
       path: '/admin',
@@ -74,126 +71,126 @@ const router = createRouter({
           path: '',
           name: 'admin-panel',
           component: AdminHomeView,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'paises',
           name: 'paisesAdmin',
           component: TablaPaises,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'pais/nuevo',
           name: 'nuevoPais',
           component: FormPais,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: '/paises/:id/editar',
           name: 'editarPais',
           component: FormPais,
           props: true,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'lugares',
           name: 'lugaresAdmin',
           component: TablaLugares,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'lugar/nuevo',
           name: 'nuevoLugar',
           component: FormLugar,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: '/lugares/:id/editar',
           name: 'editarLugar',
           component: FormLugar,
           props: true,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'idiomas',
           name: 'idiomasAdmin',
           component: TablaIdiomas,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'coches',
           name: 'cochesAdmin',
           component: TablaCoches,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'lugar/coche',
           name: 'nuevoCoche',
           component: FormCoche,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: '/coches/:id/editar',
           name: 'editarCoche',
           component: FormCoche,
           props: true,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'marcasCoche',
           name: 'marcasCocheAdmin',
           component: TablaMarcasCoche,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'carroceriasCoche',
           name: 'carroceriasCocheAdmin',
           component: TablaCarroceriasCoche,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'alquileres',
           name: 'alquileresAdmin',
           component: TablaAlquileres,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
         {
           path: 'usuarios',
           name: 'usuariosAdmin',
           component: TablaUsuarios,
-          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] }
+          meta: { requiresAuth: true, roles: ['admin', 'superadmin'] },
         },
-      ]
-    }
+      ],
+    },
   ],
-});
+})
 
 router.beforeEach(async (to, from, next) => {
-  const loginStore = useLoginStore();
+  const loginStore = useLoginStore()
 
   if (to.meta.requiresAuth) {
     if (!loginStore.token) {
-      return next({ name: 'login' });
+      return next({ name: 'login' })
     }
     if (!loginStore.user) {
-      try{
-        await loginStore.fetchUser();
-      }catch(err){
-        const error = err as AxiosError<{message:string}>;
+      try {
+        await loginStore.fetchUser()
+      } catch (err) {
+        const error = err as AxiosError<{ message: string }>
         console.log(error)
-        loginStore.token = null;
-        loginStore.user=null;
-        return next({name:'login'})
+        loginStore.token = null
+        loginStore.user = null
+        return next({ name: 'login' })
       }
     }
     if (to.meta.roles && Array.isArray(to.meta.roles)) {
-      const userRole = loginStore.user?.rol;
+      const userRole = loginStore.user?.rol
       if (!to.meta.roles.includes(userRole)) {
-        return next({ name: 'home' });
+        return next({ name: 'home' })
       }
     }
   }
-  next();
-});
+  next()
+})
 
 export default router

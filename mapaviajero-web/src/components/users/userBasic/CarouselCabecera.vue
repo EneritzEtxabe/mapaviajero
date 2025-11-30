@@ -38,15 +38,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent({
-  props:{
-    imagenes:{
-      type:Array as () =>string[],
-      required:true
+  props: {
+    imagenes: {
+      type: Array as () => string[],
+      required: true,
     },
-    alt:String,
-    titulo:String,
-    subtitulo:String
-    
+    alt: String,
+    titulo: String,
+    subtitulo: String,
   },
   data() {
     return {

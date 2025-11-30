@@ -1,8 +1,8 @@
 <template>
   <section class="w-full h-[50vh] relative">
     <img
-      :src=imagen
-      :alt=alt
+      :src="imagen"
+      :alt="alt"
       class="w-full h-full object-cover absolute inset-0 brightness-75"
     />
 
@@ -18,10 +18,10 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    props:{
-        imagen:String,
-        alt:String,
-        texto:String
-    }
+  props: {
+    imagen: String,
+    alt: String,
+    texto: String,
+  },
 })
 </script>

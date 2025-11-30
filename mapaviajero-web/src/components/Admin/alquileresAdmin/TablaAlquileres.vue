@@ -1,12 +1,12 @@
 <template>
   <div class="mx-auto p-6">
-    <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">LISTA DE ALQUILERES DE COCHES</h2>     
+    <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">
+      LISTA DE ALQUILERES DE COCHES
+    </h2>
     <!-- Separador -->
     <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>
-    <Buscador 
-      v-model:filtro="filtro"
-    />
-     <BaseTable
+    <Buscador v-model:filtro="filtro" />
+    <BaseTable
       :itemsFiltrados="datosParaMostrar"
       :columns="columns"
       :loading="loading"
@@ -18,52 +18,51 @@
 </template>
 
 <script lang="ts">
-import { mapState } from 'pinia';
+import { mapState } from 'pinia'
 import { defineComponent } from 'vue'
 import { useAlquileresStore } from '@/stores/alquileresStore'
 
 import BaseTable from '@/components/Admin/adminBasic/BaseTable.vue'
-import Buscador from '@/components/basic/BuscadorComponent.vue';
-import type { UpdateAlquiler } from '@/types';
-
+import Buscador from '@/components/basic/BuscadorComponent.vue'
+import type { UpdateAlquiler } from '@/types'
 
 export default defineComponent({
-  components: {BaseTable, Buscador},
+  components: { BaseTable, Buscador },
   data() {
-    return{
-      filtro:'',
+    return {
+      filtro: '',
       columns: [
-        { key: 'coche', label: 'Coche id'},
-        { key: 'pais', label: 'Pais'},
-        { key: 'cliente', label: 'Cliente'},
+        { key: 'coche', label: 'Coche id' },
+        { key: 'pais', label: 'Pais' },
+        { key: 'cliente', label: 'Cliente' },
         { key: 'email', label: 'Email' },
-        { key: 'fecha_inicio', label: 'Fecha inicio'},
+        { key: 'fecha_inicio', label: 'Fecha inicio' },
         { key: 'fecha_fin', label: 'Fecha fin' },
         { key: 'coste', label: 'Coste' },
       ],
     }
   },
   computed: {
-    ...mapState(useAlquileresStore,{loading:'loading', error:'error', alquileres:'items'}),
+    ...mapState(useAlquileresStore, { loading: 'loading', error: 'error', alquileres: 'items' }),
     alquileresFiltrados() {
-      if (!this.filtro){
+      if (!this.filtro) {
         return this.alquileres
-      }else{
-        return this.alquileres.filter(alquiler => {
+      } else {
+        return this.alquileres.filter((alquiler) => {
           return alquiler.cliente.nombre.toLowerCase().startsWith(this.filtro.toLowerCase())
         })
       }
     },
-    datosParaMostrar(){
-      return this.alquileresFiltrados.map(a => ({
-        id:a.id,
+    datosParaMostrar() {
+      return this.alquileresFiltrados.map((a) => ({
+        id: a.id,
         coche: a.coche.id,
         pais: a.coche.pais.nombre,
         cliente: a.cliente.nombre,
         email: a.cliente.email,
         fecha_inicio: a.fecha_inicio,
         fecha_fin: a.fecha_fin,
-        coste:a.coche.costeDia   
+        coste: a.coche.costeDia,
       }))
     },
   },
@@ -71,10 +70,10 @@ export default defineComponent({
     this.getAlquileres()
   },
   methods: {
-    getAlquileres(){
+    getAlquileres() {
       useAlquileresStore().fetchAll()
     },
-    deleteAlquiler(id:number){
+    deleteAlquiler(id: number) {
       useAlquileresStore().deleteItem(id)
     },
     editar(alquiler: UpdateAlquiler) {
@@ -84,32 +83,7 @@ export default defineComponent({
       if (confirm('¿Estás seguro de que deseas eliminar este alquiler?')) {
         await this.deleteAlquiler(id)
       }
-    }
-    // async crear(datos: any) {
-    //   try {
-    //     await this.alquileresStore.createItem({ ...datos });
-    //     alert('Aquiler creado correctamente');
-    //   } catch (err) {
-    //     this.error = err;
-    //   }
-    // },
-    // async actualizar(datos) {
-    //   try{
-    //     await this.alquileresStore.updateItem({ ...datos},true)
-    //     alert('Alquiler actualizado correctamente')
-    //   }catch(err){
-    //     this.error=err
-    //   }
-    // },
-    // async eliminar(id: number) {
-    //   if (confirm('¿Estás seguro de que deseas eliminar este alquiler?')) {
-    //     try{
-    //       await this.alquileresStore.deleteItem(id)
-    //     }catch(err){
-    //       this.error=err
-    //     }
-    //   }
-    // }
-  }
+    },
+  },
 })
 </script>

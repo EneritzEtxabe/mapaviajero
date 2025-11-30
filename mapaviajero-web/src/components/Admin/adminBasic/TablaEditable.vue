@@ -23,21 +23,21 @@
           >
             <!-- 📝 Modo edición -->
             <div v-if="idEditando === item.id">
-              <div v-if="col.key === 'rol' || col.key=='coste'" class="py-1 px-2 text-gray-500">
+              <div v-if="col.key === 'rol' || col.key == 'coste'" class="py-1 px-2 text-gray-500">
                 {{ datosEditables[col.key] }}
               </div>
               <div v-else>
                 <input
-                v-model="datosEditables[col.key]"
-                :id="col.key"
-                class="mt-1 block w-full border border-gray-300 rounded px-2 py-1 text-sm"
-              />
+                  v-model="datosEditables[col.key]"
+                  :id="col.key"
+                  class="mt-1 block w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                />
               </div>
             </div>
 
             <!-- 📄 Modo lectura -->
             <div v-else class="line-clamp-2 text-ellipsis overflow-hidden text-sm">
-               {{ item[col.key] }}
+              {{ item[col.key] }}
             </div>
           </td>
 
@@ -96,7 +96,7 @@
 import BotonCrearNuevo from '@/components/Admin/adminBasic/BotonCrearNuevo.vue'
 import ModalCrearNuevo from './ModalCrearNuevo.vue'
 import Boton from '@/components/basic/BotonComponent.vue'
-import { defineComponent, type PropType } from "vue";
+import { defineComponent, type PropType } from 'vue'
 
 export default defineComponent({
   components: {
@@ -105,12 +105,12 @@ export default defineComponent({
     Boton,
   },
   props: {
-    items:{
+    items: {
       type: Array as PropType<Array<any>>,
-      required: true
+      required: true,
     },
-    columns:{
-      type: Array as PropType<Array<{ key:string, label:string }>>,
+    columns: {
+      type: Array as PropType<Array<{ key: string; label: string }>>,
       required: true,
     },
     mostrarBotonCrear: Boolean,
@@ -123,13 +123,13 @@ export default defineComponent({
     }
   },
   methods: {
-    editar(item:{id:number}) {
+    editar(item: { id: number }) {
       this.idEditando = item.id
       this.datosEditables = { ...item }
     },
     crearNuevo() {
       this.idEditando = 0
-      this.datosEditables = this.columns.reduce<Record<string,string>>((obj, col) => {
+      this.datosEditables = this.columns.reduce<Record<string, string>>((obj, col) => {
         obj[col.key] = ''
         return obj
       }, {})
@@ -146,7 +146,7 @@ export default defineComponent({
       this.$emit('create', this.datosEditables)
       this.cancelar()
     },
-    eliminar(item:{id:number|string}) {
+    eliminar(item: { id: number | string }) {
       this.$emit('delete', item.id)
     },
   },

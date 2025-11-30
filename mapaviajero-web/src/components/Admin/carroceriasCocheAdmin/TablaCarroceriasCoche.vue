@@ -1,7 +1,9 @@
 <template>
   <div class="p-6">
     <Loader :loading="loading" :error="error">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">LISTA DE CARROCERÍAS DE COCHES</h2>     
+      <h2 class="text-3xl sm:text-4xl font-bold text-center f-color--dark tracking-wide">
+        LISTA DE CARROCERÍAS DE COCHES
+      </h2>
       <!-- Separador -->
       <div class="h-px bg--dark mx-auto w-1/4 my-6"></div>
       <div class="w-full overflow-x-auto flex flex-col">
@@ -21,39 +23,41 @@
 </template>
 
 <script lang="ts">
-import { mapState } from 'pinia';
+import { mapState } from 'pinia'
 import { defineComponent } from 'vue'
-import type {CreateCarroceriaCoche, UpdateCarroceriaCoche } from '@/types'
+import type { CreateCarroceriaCoche, UpdateCarroceriaCoche } from '@/types'
 import { useCarroceriasCocheStore } from '@/stores/carroceriasCocheStore'
 import Loader from '@/components/LoaderComponent.vue'
 
 import TablaEditable from '@/components/Admin/adminBasic/TablaEditable.vue'
 
 export default defineComponent({
-  components:{TablaEditable, Loader},
+  components: { TablaEditable, Loader },
   data() {
-    return{
-      columns: [
-        { key: 'nombre', label: 'nombre' },
-      ],
+    return {
+      columns: [{ key: 'nombre', label: 'nombre' }],
     }
   },
   computed: {
-    ...mapState(useCarroceriasCocheStore,{loading:'loading', error:'error', carroceriasCoche:'items'}),
+    ...mapState(useCarroceriasCocheStore, {
+      loading: 'loading',
+      error: 'error',
+      carroceriasCoche: 'items',
+    }),
   },
   created() {
     this.getCarroceriasCoche()
   },
   methods: {
-    getCarroceriasCoche(){
+    getCarroceriasCoche() {
       useCarroceriasCocheStore().fetchAll()
     },
-    async crear(datos:CreateCarroceriaCoche) {
-      await useCarroceriasCocheStore().createItem({ ...datos });
-      alert('Carrocería de coche creada correctamente');
+    async crear(datos: CreateCarroceriaCoche) {
+      await useCarroceriasCocheStore().createItem({ ...datos })
+      alert('Carrocería de coche creada correctamente')
     },
-    async actualizar(datos:UpdateCarroceriaCoche) {
-      await useCarroceriasCocheStore().updateItem({ ...datos},true)
+    async actualizar(datos: UpdateCarroceriaCoche) {
+      await useCarroceriasCocheStore().updateItem({ ...datos }, true)
       alert('Carrocería actualizada correctamente')
     },
     async eliminar(id: number) {
@@ -61,7 +65,6 @@ export default defineComponent({
         await useCarroceriasCocheStore().deleteItem(id)
       }
     },
-  }
+  },
 })
 </script>
-

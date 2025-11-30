@@ -7,9 +7,9 @@
       'inline-flex justify-center items-center align-middle px-3 py-1.5 rounded text-sm transition cursor-pointer',
       colorClass,
       hoverClass,
-      customClasses
+      customClasses,
     ]"
-    :type="componentType==='button' ? htmlType:undefined"
+    :type="componentType === 'button' ? htmlType : undefined"
     :title="title"
     :target="href ? '_blank' : undefined"
   >
@@ -21,14 +21,11 @@
       viewBox="0 0 24 24"
       stroke="currentColor"
     >
-      <path
-        :d="icon"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-      />
+      <path :d="icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
     </svg>
-    <span class="hidden md:inline"><slot>{{ label }}</slot></span>
+    <span class="hidden md:inline"
+      ><slot>{{ label }}</slot></span
+    >
   </component>
 </template>
 
@@ -38,8 +35,10 @@ export default {
     label: String,
     icon: String,
     title: String,
-    to:{
-      type:[String, Object] as unknown as()=>string | {name:string, params?:{id:string|number}}
+    to: {
+      type: [String, Object] as unknown as () =>
+        | string
+        | { name: string; params?: { id: string | number } },
     },
     href: String,
     customClasses: {
@@ -50,51 +49,51 @@ export default {
       type: String,
       default: 'default',
     },
-    htmlType:{
-        type:String,
-        default:'button',
-    }
+    htmlType: {
+      type: String,
+      default: 'button',
+    },
   },
   computed: {
     componentType(): string {
-      if (this.to) return 'RouterLink';
-      if (this.href) return 'a';
-      return 'button';
+      if (this.to) return 'RouterLink'
+      if (this.href) return 'a'
+      return 'button'
     },
     colorClass(): string {
       switch (this.type) {
         case 'edit':
-          return 'text-blue-600';
+          return 'text-blue-600'
         case 'delete':
-          return 'text-red-600';
+          return 'text-red-600'
         case 'update':
         case 'create':
-          return 'text-green-600';
+          return 'text-green-600'
         case 'cancel':
-          return 'btn--light';
+          return 'btn--light'
         case 'generalDark':
-            return 'btn--dark'
+          return 'btn--dark'
         default:
-          return 'text-blue-600';
+          return 'text-blue-600'
       }
     },
     hoverClass(): string {
       switch (this.type) {
         case 'edit':
-          return 'hover:bg-blue-600 hover:text-white';
+          return 'hover:bg-blue-600 hover:text-white'
         case 'delete':
-          return 'hover:bg-red-600 hover:text-white';
+          return 'hover:bg-red-600 hover:text-white'
         case 'update':
         case 'create':
-          return 'hover:bg-green-600 hover:text-white';
+          return 'hover:bg-green-600 hover:text-white'
         case 'cancel':
-          return 'hover:btn--light';
+          return 'hover:btn--light'
         case 'generalDark':
-            return 'hover:btn--dark'
+          return 'hover:btn--dark'
         default:
-          return 'hover:underline';
+          return 'hover:underline'
       }
     },
   },
-};
+}
 </script>

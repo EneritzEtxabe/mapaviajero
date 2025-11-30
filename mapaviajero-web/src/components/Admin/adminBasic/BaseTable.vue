@@ -5,15 +5,35 @@
         <table class="min-w-full table-auto text-sm border-collapse">
           <thead class="bg--dark text-white uppercase tracking-wider">
             <tr>
-              <th class="w-auto px-2 py-2 text-left border-b border-gray-300" v-for="col in columns" :key="col.key">{{ col.label }}</th>
-              <th class="w-auto px-2 py-2 text-left border-b border-gray-300 sticky top-0 right-0 z-10 bg--dark"></th>
+              <th
+                class="w-auto px-2 py-2 text-left border-b border-gray-300"
+                v-for="col in columns"
+                :key="col.key"
+              >
+                {{ col.label }}
+              </th>
+              <th
+                class="w-auto px-2 py-2 text-left border-b border-gray-300 sticky top-0 right-0 z-10 bg--dark"
+              ></th>
             </tr>
           </thead>
-          <tbody class=" text-gray-800">
-            <tr class="hover:bg--white transition duration-200" v-for="item in itemsFiltrados" :key="item.id">
-              <td class="px-2 py-2 border-b border-gray-300 align-center max-w-xs" v-for="col in columns" :key="col.key">
+          <tbody class="text-gray-800">
+            <tr
+              class="hover:bg--white transition duration-200"
+              v-for="item in itemsFiltrados"
+              :key="item.id"
+            >
+              <td
+                class="px-2 py-2 border-b border-gray-300 align-center max-w-xs"
+                v-for="col in columns"
+                :key="col.key"
+              >
                 <div v-if="Array.isArray(item[col.key])">
-                  <div v-for="(subItem, i) in item[col.key]" :key="i" class="line-clamp-2 text-ellipsis overflow-hidden"> 
+                  <div
+                    v-for="(subItem, i) in item[col.key]"
+                    :key="i"
+                    class="line-clamp-2 text-ellipsis overflow-hidden"
+                  >
                     {{ subItem.nombre }}
                   </div>
                 </div>
@@ -21,14 +41,16 @@
                   {{ item[col.key] }}
                 </div>
               </td>
-              <td class="flex flex-col px-2 py-2 border-b border-gray-300 sticky right-0 z-10 bg--white whitespace-nowrap">
+              <td
+                class="flex flex-col px-2 py-2 border-b border-gray-300 sticky right-0 z-10 bg--white whitespace-nowrap"
+              >
                 <Boton
-                    type="edit"
-                    label="Editar"
-                    title="Editar"
-                    :icon="'M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3zM4 20h16'"
-                    @click="editar(item)"
-                    class="mr-3"
+                  type="edit"
+                  label="Editar"
+                  title="Editar"
+                  :icon="'M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3zM4 20h16'"
+                  @click="editar(item)"
+                  class="mr-3"
                 />
                 <Boton
                   type="delete"
@@ -47,37 +69,36 @@
 </template>
 
 <script lang="ts">
-import Boton from '@/components/basic/BotonComponent.vue';
+import Boton from '@/components/basic/BotonComponent.vue'
 import Loader from '@/components/LoaderComponent.vue'
-import {defineComponent, type PropType} from 'vue';
+import { defineComponent, type PropType } from 'vue'
 export default defineComponent({
-  components:{Boton, Loader},
+  components: { Boton, Loader },
   props: {
-    itemsFiltrados:{
+    itemsFiltrados: {
       type: Array as PropType<Array<any>>,
-      required: true
+      required: true,
     },
-    columns:{
-      type: Array as PropType<Array<{ key: number | string, label:string }>>,
-      required: true
+    columns: {
+      type: Array as PropType<Array<{ key: number | string; label: string }>>,
+      required: true,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     error: {
-      type:String as PropType<string | null>,
-      default:null
-    }
+      type: String as PropType<string | null>,
+      default: null,
+    },
   },
   methods: {
-    editar(item:{id:number|string}) 
-    {
+    editar(item: { id: number | string }) {
       this.$emit('edit', item.id)
     },
-    eliminar(item:{id:number|string}) {
+    eliminar(item: { id: number | string }) {
       this.$emit('delete', item.id)
-    }
-   }
+    },
+  },
 })
 </script>

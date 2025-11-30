@@ -1,59 +1,59 @@
-import api from "@/axios/axios"
+import api from '@/axios/axios'
 
 export function useCrud<
-  TResponse extends {id:number},
+  TResponse extends { id: number },
   TCreate extends Partial<TResponse>,
-  TUpdate extends Partial<TResponse> & {id:number}
+  TUpdate extends Partial<TResponse> & { id: number },
 >(apiUrl: string) {
   return {
     async fetchAll() {
-      try{
+      try {
         const res = await api.get(apiUrl)
         return res
-      }catch(error){
-        console.log("La consulta ha fallado:", error)
+      } catch (error) {
+        console.log('La consulta ha fallado:', error)
         throw error
       }
     },
 
-    async createItem(item:TCreate) {
-      try{
+    async createItem(item: TCreate) {
+      try {
         const res = await api.post(apiUrl, item)
         return res
-      }catch(error){
-        console.log("La consulta ha fallado:", error)
+      } catch (error) {
+        console.log('La consulta ha fallado:', error)
         throw error
       }
     },
 
     async getItem(id: number) {
-      try{
+      try {
         const res = await api.get(`${apiUrl}/${id}`)
         return res
-      }catch(error){
-        console.log("La consulta ha fallado:", error)
+      } catch (error) {
+        console.log('La consulta ha fallado:', error)
         throw error
       }
     },
 
-    async updateItem(item:TUpdate) {
-      try{
+    async updateItem(item: TUpdate) {
+      try {
         const res = await api.put(`${apiUrl}/${item.id}`, item)
         return res
-      }catch(error){
-        console.log("La consulta ha fallado:", error)
+      } catch (error) {
+        console.log('La consulta ha fallado:', error)
         throw error
       }
     },
 
     async deleteItem(id: number) {
-      try{
+      try {
         const res = await api.delete(`${apiUrl}/${id}`)
         return res
-      }catch(error){
-        console.log("La consulta ha fallado:", error)
+      } catch (error) {
+        console.log('La consulta ha fallado:', error)
         throw error
       }
-    }
+    },
   }
 }

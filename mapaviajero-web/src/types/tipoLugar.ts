@@ -1,13 +1,13 @@
 export interface TipoLugar {
-    id: number
-    nombre: string
+  id: number
+  nombre: string
 }
 
 export interface CreateTipoLugar {
-    nombre: string
+  nombre: string
 }
 
 export interface UpdateTipoLugar {
-    id: number
-    nombre?: string
+  id: number
+  nombre?: string
 }
