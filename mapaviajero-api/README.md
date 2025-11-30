@@ -61,7 +61,7 @@ php artisan serve
 
 ## Estructura de carpetas
 
-<pre>```txt
+<pre>```
 app/
 ├── Http/
 │ ├── Controllers/ # Controladores API
