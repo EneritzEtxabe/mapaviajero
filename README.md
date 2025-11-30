@@ -1,0 +1,18 @@
+## MAPAVIJERO
+
+Esta aplicación fullstack está diseñada para todos aquellas personas que aman viajar y encontrar los lugares más bonitos del mundo.
+
+La aplicación tiene rutas publicas como privadas a las que se puede acceder mediante la página de login. Y una vez ahí, se dividen también dos partes, el lado de cliente y el lado de administrador.
+![alt text](./docs/login.png.png)
+
+Por una parte están las vistas del cliente, donde se pueden visualizar los diferentes rincones del mundo y cierta información sobre ellos. Estas vistas son iguales para usuarios logados como no logados, lo que cambia es que el usuario logado tiene la opción de alquilar un coche en cualquir lugar del mundo.
+![alt text](./docs/inicio.png)
+![alt text](./docs/destinosLogado.png.png)
+![alt text](./docs/alquiler.png.png)
+
+Y por otra parte está el panel de control de los administradores de la aplicación que son los encargados de alimentar la API mediante tablas y formulario simples.
+![alt text](./docs/panel-admin.png)
+![alt text](./docs/TablaLugares.png.png)
+![alt text](./docs/FormEdicion.png.png)
+
+Dentro de las carpetas mapaviajero-api y mapaviajero-web se encuentran otros archivos README con más información sobre cada parte del proyecto, las indicaciones de isntalación, despliegue y comprensión.
