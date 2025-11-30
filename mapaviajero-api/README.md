@@ -61,6 +61,7 @@ php artisan serve
 
 ## Estructura de carpetas
 
+<pre>```txt
 app/
 ├── Http/
 │ ├── Controllers/ # Controladores API
@@ -77,6 +78,7 @@ test/
 | ├── Feature/ # Test integracion
 | | ├── crud-autorizacion/ # Test de permisos
 | | ├── validacion/ # Test de validacion de datos
+```</pre>
 
 ## Rutas
 
